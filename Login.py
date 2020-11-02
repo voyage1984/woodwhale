@@ -6,22 +6,26 @@
         3. 明文密码切换
         4. 登录状态判断(弹窗提示)      已完成
         5. 接入数据库                已完成
+        6. 传递db到主窗口             已完成
+        7. 改为MessageBox（拓展）
 '''
 
 from PyQt5.QtWidgets import QWidget,QPushButton,QMessageBox,\
     QHBoxLayout,QVBoxLayout,QLabel,QLineEdit
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 
 import MyDatabase
 
 class LoginWindow(QWidget):
+    _signal = pyqtSignal(MyDatabase.DBModel)
     def __init__(self):
         super().__init__()
         self.__init__gui()
 
     # 窗口设置
     def __init__gui(self):
+
         self.setWindowTitle("登录")
         self.setWindowIcon(QIcon('./src/logo.ico'))
         self.setFixedSize(480,240)
@@ -59,7 +63,7 @@ class LoginWindow(QWidget):
         self.btns.addWidget(self.btn_cancel)
 
         self.btn_login.clicked.connect(self.confirmEvent)
-        self.btn_cancel.clicked.connect(QCoreApplication.instance().quit)
+        self.btn_cancel.clicked.connect(self.close)
 
     # 登录事件
     def confirmEvent(self):
@@ -74,16 +78,20 @@ class LoginWindow(QWidget):
             try:
                 self.Login(name,password)
             except:
-                print('登录失败！')
+                print('登录失败！: Login.confirmEvent')
 
     # 登录数据库
     def Login(self,name,password):
-        try:
-            db = MyDatabase.DBModel(name,password)
-        except:
+        self.db = MyDatabase.DBModel()
+        if self.db.conn(name,password) == False:
             print('登录错误！: Login.Login')
             self.loginError()
             return False
+        else:
+            print('登录成功!')
+            self._signal.emit(self.db)
+            self.close()
+
 
     # 登录失败提示框
     def loginError(self):
@@ -99,11 +107,19 @@ class LoginWindow(QWidget):
 
     # 取消事件
     def closeEvent(self, event):
-        reply = QMessageBox.question(self, '警告',
-                                     "确认退出?", QMessageBox.Yes |
-                                     QMessageBox.No, QMessageBox.No)
-
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+        print('取消事件: LogincloseEvent')
+        try:
+            if self.db.status() != False:
+                print('登录成功！: Login.closeEvent')
+            else:
+                print('登录失败！: Login.closeEvent')
+        except:
+            print('登录失败！: Login.closeEvent')
+        # reply = QMessageBox.question(self, '警告',
+        #                              "确认退出?", QMessageBox.Yes |
+        #                              QMessageBox.No, QMessageBox.No)
+        #
+        # if reply == QMessageBox.Yes:
+        #     event.accept()
+        # else:
+        #     event.ignore()
