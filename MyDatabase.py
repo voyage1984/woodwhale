@@ -21,6 +21,7 @@ class DBModel:
 
     def show_data(self):
         print('开始读取数据库...')
+        cursor = None
         try:
             cursor = self.myconnect.cursor()
         except:
