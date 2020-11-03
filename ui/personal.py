@@ -1,17 +1,22 @@
 from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QMessageBox
+# from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSignal
 from PyQt5 import QtWidgets
-import Login
 import MyDatabase
 
-class Ui_MainWindow(QWidget):
+class personal(QWidget):
+    _signal = pyqtSignal()
     def __init__(self):
         super().__init__()
         self.db = MyDatabase.DBModel()
+        # self.setWindowIcon(QIcon('./src/logo.ico'))
+        # self.setFixedSize(1280, 720)
+        # self.setWindowTitle('信息管理系统')
 
         self.VBoxLayout = QVBoxLayout()
         self.HBoxLayout = QHBoxLayout()
-        self.btn_show = QtWidgets.QPushButton('查看')
-        self.btn_login = QtWidgets.QPushButton('登录')
+        self.btn_show = QtWidgets.QPushButton('个人信息')
+        self.btn_login = QtWidgets.QPushButton('登出')
         self.textBrowser = QtWidgets.QTextBrowser()
 
         self.HBoxLayout.addWidget(self.btn_show)
@@ -19,29 +24,34 @@ class Ui_MainWindow(QWidget):
         self.VBoxLayout.addLayout(self.HBoxLayout)
         self.VBoxLayout.addWidget(self.textBrowser)
 
-        self.btn_login.clicked.connect(self.loginwindow)
+        self.btn_login.clicked.connect(self.logoutwindow)
         self.btn_show.clicked.connect(self.show_data)
 
         self.setLayout(self.VBoxLayout)
 
     # 登录成功
-    def get_db(self,db):
-        self.db = db
-        self.btn_login.setText('登出')
-        self.btn_login.clicked.connect(self.logoutwindow)
+    # def get_db(self,db):
+    #     self.db = db
+    #     self.btn_login.setText('登出')
+    #     self.btn_login.clicked.connect(self.logoutwindow)
+
 
     # 登录窗口
-    def loginwindow(self):
-        self.login = Login.LoginWindow()
-        self.login.show()
-        self.login._signal.connect(self.get_db)
+    # def loginwindow(self):
+    #     self.login = Login.LoginWindow()
+    #     self.login.show()
+    #     self.login._signal.connect(self.get_db)
+
+    def setdb(self,db):
+        self.db = db
 
     # 登出窗口，默认登出，不显示
     def logoutwindow(self):
-        print('登出...')
+        print('登出: personal.logoutwindow')
         self.db = None
         self.btn_login.setText('登录')
-        self.btn_login.clicked.connect(self.loginwindow)
+        self._signal.emit()
+        # self.btn_login.clicked.connect(self.loginwindow)
 
     # 查询数据
     def show_data(self):
