@@ -7,7 +7,6 @@
         4. 登录状态判断(弹窗提示)      已完成
         5. 接入数据库                已完成
         6. 传递db到主窗口             已完成
-        7. 改为MessageBox（拓展）
 '''
 
 from PyQt5.QtWidgets import QWidget,QPushButton,QMessageBox,\
@@ -25,10 +24,9 @@ class LoginWindow(QWidget):
 
     # 窗口设置
     def __init__gui(self):
-
+        print('创建登录框...')
         self.setWindowTitle("登录")
         self.setWindowIcon(QIcon('./src/logo.ico'))
-        self.setFixedSize(480,240)
         self.setInput()
         self.setBtn()
         self.win = QVBoxLayout()
@@ -38,6 +36,7 @@ class LoginWindow(QWidget):
 
     # 输入框
     def setInput(self):
+        print('创建输入框...')
         self.lab_username = QLabel('用户名：')
         self.lab_password = QLabel('密  码：')
         self.edit_username = QLineEdit()
@@ -54,16 +53,17 @@ class LoginWindow(QWidget):
 
     # 按钮框：确认 / 取消
     def setBtn(self):
+        print('创建按钮...')
         self.btn_login  = QPushButton('登录',self)
-        self.btn_cancel = QPushButton('取消',self)
+        # self.btn_cancel = QPushButton('取消',self)
         self.btn_login.resize(self.btn_login.sizeHint())
-        self.btn_cancel.resize(self.btn_cancel.sizeHint())
+        # self.btn_cancel.resize(self.btn_cancel.sizeHint())
         self.btns = QHBoxLayout()
         self.btns.addWidget(self.btn_login)
-        self.btns.addWidget(self.btn_cancel)
+        # self.btns.addWidget(self.btn_cancel)
 
         self.btn_login.clicked.connect(self.confirmEvent)
-        self.btn_cancel.clicked.connect(self.close)
+        # self.btn_cancel.clicked.connect(self.close)
 
     # 登录事件
     def confirmEvent(self):
