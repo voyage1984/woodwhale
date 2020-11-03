@@ -6,7 +6,7 @@
     * 登录后修改按键名称
 '''
 
-from PyQt5.QtWidgets import QWidget,QFrame,QPushButton,QVBoxLayout,QHBoxLayout,QStackedLayout,QLabel
+from PyQt5.QtWidgets import QWidget,QFrame,QPushButton,QVBoxLayout,QHBoxLayout,QStackedLayout,QLabel,QMessageBox
 from PyQt5.QtGui import QIcon,QPixmap
 
 import Login
@@ -96,3 +96,13 @@ class Ui_home(QWidget):
     def setpage2(self):                                 # 切换page2
         print('切换page2')
         self.qsl.setCurrentIndex(1)
+
+    def closeEvent(self,event):
+        reply = QMessageBox.question(self, '警告',
+                                     "确认退出?", QMessageBox.Yes |
+                                     QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
