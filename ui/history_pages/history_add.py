@@ -72,7 +72,7 @@ class history_add(QWidget):
             print('连结数据库错误!: add_history.submit_event')
 
     def insert_data(self):
-        print('开始插入数据: add_hesitory.insert_data')
+        print('开始插入数据: hesitory_add.insert_data')
         date = self.input_date.text()
         title = self.input_title.text()
         article = self.input_article.toPlainText()
@@ -116,7 +116,7 @@ class history_add(QWidget):
 
     def check_exist(self,date):
         print('检查日期: ',date,"是否存在...")
-        search = self.db.get_search_from_table(0,date,'history')
+        search = self.db.get_search_from_table(0,date,'history',1)
         if len(search) == 0:
             print('未查询到数据: ',date)
             return False
@@ -148,7 +148,7 @@ class history_add(QWidget):
         else:
             print('取消更新: history_add.alter_Event')
             return False
-
+        
 
 
 

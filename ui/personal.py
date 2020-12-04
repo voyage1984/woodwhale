@@ -9,9 +9,6 @@ class personal(QWidget):
     def __init__(self):
         super().__init__()
         self.db = MyDatabase.DBModel()
-        # self.setWindowIcon(QIcon('./src/logo.ico'))
-        # self.setFixedSize(1280, 720)
-        # self.setWindowTitle('信息管理系统')
 
         self.VBoxLayout = QVBoxLayout()
         self.HBoxLayout = QHBoxLayout()
@@ -25,25 +22,16 @@ class personal(QWidget):
         self.VBoxLayout.addWidget(self.textBrowser)
 
         self.btn_login.clicked.connect(self.logoutwindow)
-        self.btn_show.clicked.connect(self.show_data)
+        self.btn_show.clicked.connect(self.showdata)
 
         self.setLayout(self.VBoxLayout)
 
-    # 登录成功
-    # def get_db(self,db):
-    #     self.db = db
-    #     self.btn_login.setText('登出')
-    #     self.btn_login.clicked.connect(self.logoutwindow)
-
-
-    # 登录窗口
-    # def loginwindow(self):
-    #     self.login = Login.LoginWindow()
-    #     self.login.show()
-    #     self.login._signal.connect(self.get_db)
-
     def setdb(self,db):
         self.db = db
+        r1 = db.get_user()
+        r ='当前登录用户: ' + str(r1)
+        print(r)
+        self.textBrowser.setText(r)
 
     # 登出窗口，默认登出，不显示
     def logoutwindow(self):
@@ -51,12 +39,11 @@ class personal(QWidget):
         self.db = None
         self.btn_login.setText('登录')
         self._signal.emit()
-        # self.btn_login.clicked.connect(self.loginwindow)
 
     # 查询数据
-    def show_data(self):
+    def showdata(self):
         try:
-            result = self.db.show_data()
+            result = self.db.show_data('userlist')
             print('查询成功！: mainwindow.show_data')
         except:
             print('查询失败！: main.get_db')
@@ -71,7 +58,7 @@ class personal(QWidget):
 
     # ‘查询’ 按钮错误事件
     def showError(self):
-        print('查询错误: 未登录')
+        print('查询错误！')
         QMessageBox.warning(self, '错误',
-                            "请先登录！",
+                            "读取失败！",
                             QMessageBox.Apply)
