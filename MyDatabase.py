@@ -71,6 +71,12 @@ class DBModel:
             print('已连接数据库：MyDatavase.DBModel.status')
             return cursor
 
+    def get_colName(self,col,table):
+        if len(self.history_table) < col:
+            print('未知的列名: ',col,table)
+            return -1
+        return self.history_table[col]
+
     def insert_history(self,date,title,article):
         cursor = self.status(0)
         if cursor != False:
@@ -114,14 +120,14 @@ class DBModel:
             print("执行sql语句：",sqlcmd)
             cursor.execute(sqlcmd)
             list = cursor.fetchall()
-            self.myconnect.commit()
+            # self.myconnect.commit()
             print("查询成功！\n")
             return list
         else:
             print("查询失败！：MyDatabase.DBModel.get_all")
             return False
 
-    def get_search_from_table(self,col,keyword,table):
+    def get_search_from_table(self,col,keyword,table,mode):
         cursor = self.status(0)
         if cursor != False:
             print('开始读取数据表: ',table)
@@ -130,19 +136,21 @@ class DBModel:
                 print('获取列名失败！: MyDatabase.DBModel.get_search_from_table()')
                 return
             print('获取列名成功: ',colname)
-            sqlcmd = "select * from " + table + ' where ' + colname + " = '" + keyword+"'"
-            print("执行sql语句：", sqlcmd)
-            cursor.execute(sqlcmd)
-            list = cursor.fetchall()
-            self.myconnect.commit()
-            print("查询成功！\n")
-            return list
+            if mode == 1:
+                print('搜索模式: 严格搜索')
+                sqlcmd = "select * from " + table + ' where ' + colname + " = '" + keyword+"'"
+            else:
+                print('搜索模式: 模糊搜索')
+                sqlcmd = "select * from " + table + ' where ' + colname + " like '%" + keyword + "%'"
+            try:
+                print("执行sql语句：", sqlcmd)
+                cursor.execute(sqlcmd)
+                print('开始获取数据...')
+                list = cursor.fetchall()
+                return list
+            except:
+                print('发生了错误！: MyDatabase.get_search_from_table')
+                return ""
         else:
             print("查询失败！：MyDatabase.DBModel.get_all")
             return False
-
-    def get_colName(self,col,table):
-        if len(self.history_table) < col:
-            print('未知的列名: ',col,table)
-            return -1
-        return self.history_table[col]
