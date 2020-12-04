@@ -4,8 +4,10 @@
     * 自定义格式化输出
 """
 
-from PyQt5.QtWidgets import QWidget,QComboBox, QLineEdit,QPushButton,QHBoxLayout,QVBoxLayout,QFrame,QLabel,QStackedLayout
+from PyQt5.QtWidgets import QWidget,QComboBox, QLineEdit,QPushButton,QHBoxLayout,QVBoxLayout,QFrame,QButtonGroup,QRadioButton,QStackedLayout
 from ui.history_pages.history_search_result import history_search_result
+
+import time
 
 class history_search(QWidget):
     def __init__(self):
@@ -20,11 +22,19 @@ class history_search(QWidget):
         self.menus.addItem("内容")
         self.menus.setFixedSize(100,40)
 
+        self.select_mode = QButtonGroup()
+        self.select_mode_strict = QRadioButton('严格搜索')
+        self.select_mode_blurry = QRadioButton('模糊搜索')
+        self.select_mode.addButton(self.select_mode_strict)
+        self.select_mode.addButton(self.select_mode_blurry)
+        self.select_mode_strict.setChecked(True)
+
         self.input_search = QLineEdit()
         self.btn_search_keyword = QPushButton("搜索")
-        self.btn_search_all = QPushButton("搜索全部")
+        self.btn_clear_all = QPushButton("Clear")
 
-        self.btn_search_all.clicked.connect(self.load_all_info)
+
+        self.btn_clear_all.clicked.connect(self.clear_all)
         self.btn_search_keyword.clicked.connect(self.load_keyword_info)
 
         self.infos = QFrame()
@@ -37,7 +47,9 @@ class history_search(QWidget):
         menubar.addWidget(self.menus)
         menubar.addWidget(self.input_search)
         menubar.addWidget(self.btn_search_keyword)
-        menubar.addWidget(self.btn_search_all)
+        menubar.addWidget(self.btn_clear_all)
+        menubar.addWidget(self.select_mode_strict)
+        menubar.addWidget(self.select_mode_blurry)
 
         layout = QVBoxLayout()
         layout.addLayout(menubar)
@@ -48,21 +60,24 @@ class history_search(QWidget):
     def set_db(self,db):
         self.db = db
 
-    def load_all_info(self):
-        info = self.db.get_all_from_table("history")
-        self.search_result.show_data(info)
-
     def load_keyword_info(self):
         print('点击搜索: history_search.load_keyword_info')
         index = self.get_index()
         if index == -1:
             return
         keyword = self.input_search.text()
-        print("搜索关键词: ",keyword)
+        if self.select_mode_strict.isChecked():
+            mode = 1
+            print('搜索模式: 严格搜索')
+        else:
+            mode = 0
+            print('搜索模式: 模糊搜索')
         if len(keyword) == 0:
-            print('请输入关键词！: history_search.load_keyword_info')
-            return
-        info = self.db.get_search_from_table(index,keyword,'history')
+            print('没有关键词, 默认搜索全部')
+            info = self.db.get_all_from_table('history')
+        else:
+            print("搜索关键词: ", keyword)
+            info = self.db.get_search_from_table(index,keyword,'history',mode)
         self.search_result.show_data(info)
 
     def get_index(self):
@@ -78,6 +93,8 @@ class history_search(QWidget):
             print('错误的索引：', index)
         return index
 
+    def clear_all(self):
+        self.search_result.clear_data()
 
 
 
