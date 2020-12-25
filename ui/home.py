@@ -25,6 +25,7 @@ class Ui_home(QWidget):
         self.mainwindow()
         self.rightwindow()
         self.leftwindow()
+        self.click_event()
 
     def mainwindow(self):
         self.setWindowIcon(QIcon('./src/logo.ico'))
@@ -40,9 +41,6 @@ class Ui_home(QWidget):
         self.page1 = loginWindow()
         self.page2 = tools()
         self.page1_index = page_index()
-        
-        self.page1._signal.connect(self.get_db)
-        self.page1_index._signal.connect(self.logout)
 
         self.qsl = QStackedLayout(self.rightFrame)
         self.qsl.addWidget(self.page1)
@@ -59,9 +57,6 @@ class Ui_home(QWidget):
         self.btn_book_management = QPushButton('图书管理')
         self.btn_user_management = QPushButton('用户管理')
 
-        self.btn_login.clicked.connect(lambda :self.to_page(0))
-        self.btn_tools.clicked.connect(lambda :self.to_page(1))
-
         leftBox = QVBoxLayout()
         leftBox.addWidget(self.label)
         leftBox.addWidget(self.btn_login)
@@ -72,6 +67,13 @@ class Ui_home(QWidget):
         self.layout.addLayout(leftBox)
         self.layout.addWidget(self.rightFrame)
         self.setLayout(self.layout)
+
+    def click_event(self):
+        self.page1._signal.connect(self.get_db)
+        self.page1_index._signal.connect(self.logout)
+        self.btn_login.clicked.connect(lambda :self.to_page(0))
+        self.btn_tools.clicked.connect(lambda :self.to_page(1))
+
 
     def to_page(self,num):
         status = self.test_db()
