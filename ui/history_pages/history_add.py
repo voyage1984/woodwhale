@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QLabel,QWidget,QHBoxLayout,QLineEdit,QTextEdit,QVBox
 from PyQt5.QtCore import QThread,pyqtSignal
 
 import MyDatabase
+import System
 
 class history_add(QWidget):
     def __init__(self):
@@ -69,10 +70,10 @@ class history_add(QWidget):
         if self.db.status(0) != False:
             self.insert_data()
         else:
-            print('连结数据库错误!: add_history.submit_event')
+            print('连结数据库错误!',System.func_name())
 
     def insert_data(self):
-        print('开始插入数据: hesitory_add.insert_data')
+        print('开始插入数据',System.func_name())
         date = self.input_date.text()
         title = self.input_title.text()
         article = self.input_article.toPlainText()
@@ -97,7 +98,8 @@ class history_add(QWidget):
                 self.clear_text()
             else:
                 self.add_alert(0)
-                print('添加失败！: add_history.insert_data')
+                print('添加失败！',System.func_name())
+                self.show_err()
 
     def check_history(self,date,title,artile):
         err_msg = "add_history.check_history"
@@ -143,15 +145,16 @@ class history_add(QWidget):
                                      "是否更新?",QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            print('确认更新: history_add.alter_Event')
+            print('确认更新',System.func_name())
             return True
         else:
-            print('取消更新: history_add.alter_Event')
+            print('取消更新',System.func_name())
             return False
-        
 
-
-
+    def show_err(self):
+        reply = QMessageBox.question(self, '插入失败！',
+                                     "请检查输入", QMessageBox.Yes |
+                                     QMessageBox.No)
 
 class alert_thread(QThread):
     success = "成功！"
