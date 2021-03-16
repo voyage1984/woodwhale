@@ -59,9 +59,9 @@ class history_search(QWidget):
 
     def set_db(self,db):
         self.db = db
+        self.search_result.set_db(db)
 
     def load_keyword_info(self):
-        print('点击搜索: history_search.load_keyword_info')
         index = self.get_index()
         if index == -1:
             return
