@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from PyQt5 import QtWidgets
 import MyDatabase
+import System
 
 class personal(QWidget):
     _signal = pyqtSignal()
@@ -35,7 +36,7 @@ class personal(QWidget):
 
     # 登出窗口，默认登出，不显示
     def logoutwindow(self):
-        print('登出: personal.logoutwindow')
+        print('登出')
         self.db = None
         self.btn_login.setText('登录')
         self._signal.emit()
@@ -44,9 +45,9 @@ class personal(QWidget):
     def showdata(self):
         try:
             result = self.db.show_data('userlist')
-            print('查询成功！: mainwindow.show_data')
+            print('查询成功')
         except:
-            print('查询失败！: main.get_db')
+            print('查询失败！',System.func_name())
             self.showError()
             return
         list = ''
