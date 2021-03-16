@@ -1,20 +1,11 @@
-'''
-    登录窗口
-    待办：
-        1. 布局美化
-        2. 字体设置
-        3. 明文密码切换
-        4. 登录状态判断(弹窗提示)      已完成
-        5. 接入数据库                已完成
-        6. 传递db到主窗口             已完成
-'''
-
 from PyQt5.QtWidgets import QWidget,QPushButton,QMessageBox,\
     QHBoxLayout,QVBoxLayout,QLabel,QLineEdit
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QIcon
 
 import MyDatabase
+
+import System
 
 class LoginWindow(QWidget):
     _signal = pyqtSignal(MyDatabase.DBModel)
@@ -40,8 +31,8 @@ class LoginWindow(QWidget):
         self.edit_username = QLineEdit()
         self.edit_password = QLineEdit()
 
-        self.edit_password.setText("password")
-        self.edit_username.setText("username")
+        self.edit_password.setText(System.password)
+        self.edit_username.setText(System.username)
 
         self.username = QHBoxLayout()
         self.password = QHBoxLayout()
@@ -66,52 +57,54 @@ class LoginWindow(QWidget):
     def confirmEvent(self):
         name = self.edit_username.text()
         password = self.edit_password.text()
+        funcname = System.func_name()
 
         if len(name)==0 or len(password)==0:
-           print('账号 / 密码不能为空！: Login.confirmEvent')
+           print('账号 / 密码不能为空！')
            self.nonEmpty()
         else:                           # 接入数据库
-            print('正在登录: Login.LoginWindow.confirmEvent')
+            print('正在登录',funcname)
             try:
                 self.Login(name,password)
             except:
-                print('登录失败！: Login.confirmEvent')
+                print('登录失败！',funcname)
 
     # 登录数据库
     def Login(self,name,password):
         self.db = MyDatabase.DBModel()
+        System.func_name()
         if self.db.conn(name,password) == False:
-            print('登录错误！: Login.LoginWindow.Login')
+            print('登录错误！',System.func_name())
             self.loginError()
             return False
         else:
-            print('登录成功!: Login.LoginWindow.Login')
+            print('登录成功!',System.func_name())
             self._signal.emit(self.db)
             self.close()
 
 
     # 登录失败提示框
     def loginError(self):
-        print('登录失败!: Login.LoginWindow.loginError')
+        print('登录失败!',System.func_name())
         QMessageBox.warning(self, '错误',
-                            "用户名 / 密码错误！",
+                            "请检查用户名/密码！",
                             QMessageBox.Apply)
 
     # 判断输入是否为空
     def nonEmpty(self):
-        print('登录失败!: Login.LoginWindow.nonEmpty')
+        print('登录失败!',System.func_name())
         QMessageBox.warning(self,'错误',
                                  "用户名 / 密码不能为空！",
                                  QMessageBox.Apply)
 
     # 取消事件
     def closeEvent(self, event):
-        print('取消事件: Login.LoginWindow.LogincloseEvent')
+        print('取消事件',System.func_name())
         try:
             if self.db.status(0) != False:
-                print('登录成功！: Login.LoginWindow.Login.closeEvent')
+                print('登录成功！',System.func_name())
             else:
-                print('登录失败！: Login.LoginWindow.Login.closeEvent')
+                print('登录失败！',System.func_name())
         except:
-            print('登录失败！: Login.LoginWindow.Login.closeEvent')
+            print('登录失败！',System.func_name())
 
