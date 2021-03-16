@@ -90,7 +90,7 @@ class Ui_home(QWidget):
                 self.login_Error()
 
     def get_db(self,db):
-        print('已登录: home.get_db')
+        print('已登录')
         self.db = db
         self.btn_login.setText('个人信息')
         self.qsl.setCurrentIndex(2)
@@ -122,14 +122,14 @@ class Ui_home(QWidget):
                                  QMessageBox.No, QMessageBox.No)
 
     def closeEvent(self,event):
-        print('退出事件: home.Ui_home.closeEvent')
+        print('退出事件')
         reply = QMessageBox.question(self, '警告',
                                      "确认退出?", QMessageBox.Yes |
                                      QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            print('确认退出: home.Ui_home.closeEvent')
+            print('确认退出')
             event.accept()
         else:
-            print('取消退出: home.Ui_home.closeEvent')
+            print('取消退出')
             event.ignore()
