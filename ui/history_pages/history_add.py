@@ -84,7 +84,8 @@ class history_add(QWidget):
             elif check ==2:
                 print('错误: 日期已存在')
                 if self.alter_Event():
-                    self.db.update_history(date,title,article)
+                    # self.db.update_history(date,title,article)
+                    self.db.update_tdta("history",date,title,article)
                     self.clear_text()
                     print('更新成功')
                     self.add_alert(1)

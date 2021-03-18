@@ -2,8 +2,7 @@ import inspect
 
 from PyQt5.QtWidgets import QMessageBox
 
-l_history = ['h_date','h_title','h_article']
-l_recommend = ['r_date','r_title','r_article']
+table_list = ['date','title','article']
 db_name  = 'PyQt5_db'
 username = 'testuser'
 password = 'password'

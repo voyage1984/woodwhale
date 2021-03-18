@@ -9,7 +9,7 @@ class DBModel:
     def __init__(self):
         # print('初始化数据库模型: MyDatabase.DBModel.__init__')
         self.myconnect = None
-        self.history_table = System.l_history
+        self.table_list = System.table_list
 
     def conn(self,name,pswd):
         print('开始连接数据库',System.func_name())
@@ -76,10 +76,10 @@ class DBModel:
             return cursor
 
     def get_colName(self,col,table):
-        if len(self.history_table) < col:
+        if len(self.table_list) < col:
             print('未知的列名: ',col,table)
             return -1
-        return self.history_table[col]
+        return self.table_list[col]
 
     # def insert_history(self,date,title,article):
     #     cursor = self.status(0)
