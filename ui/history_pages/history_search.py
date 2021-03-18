@@ -72,13 +72,13 @@ class history_search(QWidget):
         else:
             mode = 0
             print('搜索模式: 模糊搜索')
-        if len(keyword) == 0:
-            print('没有关键词, 默认搜索全部')
-            info = self.db.get_all_from_table('history')
-        else:
-            print("搜索关键词: ", keyword)
-            info = self.db.get_search_from_table(index,keyword,'history',mode)
-        self.search_result.show_data(info)
+        # if len(keyword) == 0:
+        #     print('没有关键词, 默认搜索全部')
+        #     info = self.db.get_all_from_table('history')
+        # else:
+        #     print("搜索关键词: ", keyword)
+        #     info = self.db.get_search_from_table(index,keyword,'history',mode)
+        self.search_result.show_data(index,keyword,mode)
 
     def get_index(self):
         index = self.menus.currentIndex()

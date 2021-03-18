@@ -16,7 +16,9 @@ class history_search_result(QWidget):
         self.detail.set_db(db)
 
     def init(self):
-        self.result = ''
+        self.index = ''
+        self.keyword = ''
+        self.mode = ''
         self.list = QListWidget()
         self.list.addItem("-----搜索-----")
         self.layout = QGridLayout()
@@ -25,8 +27,16 @@ class history_search_result(QWidget):
         self.list.itemClicked.connect(self.item_detail)
         self.detail = history_detail.history_detail()
 
-    def show_data(self,result):
-        self.result = result
+    def show_data(self,index,keyword,mode):
+        self.index = index
+        self.keyword = keyword
+        self.mode = mode
+        if len(keyword) == 0:
+            print('没有关键词, 默认搜索全部')
+            result = self.db.get_all_from_table('history')
+        else:
+            print("搜索关键词: ", keyword)
+            result = self.db.get_search_from_table(index, keyword, 'history', mode)
         self.clear_data()
         print("开始显示...")
         if len(result) == 0:
@@ -80,7 +90,8 @@ class history_search_result(QWidget):
         self.detail.exec()
 
     def delete_item(self,item):
-        self.list.takeItem(self.list.row(item))
+        # self.list.takeItem(self.list.row(item))
+        self.show_data(self.index,self.keyword,self.mode)
         print('已刷新')
 
     def is_item(self,date):

@@ -53,6 +53,7 @@ class history_detail(QDialog):
                 self.db.update_tdta("history",self.date,title,article)
                 self.status.setText('已保存')
                 self.close()
+                self._signal.emit()
             except:
                 print('错误')
 
