@@ -2,7 +2,7 @@ import inspect
 
 from PyQt5.QtWidgets import QMessageBox
 
-table_list = ['date','title','article']
+col_name = ['date','title','article']
 db_name  = 'PyQt5_db'
 username = 'testuser'
 password = 'password'
