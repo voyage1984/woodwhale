@@ -29,7 +29,7 @@ class recommend_result(QWidget):
             self.list.addItem('没有数据！')
             return
         for line in list:
-            print(line[1].encode('latin-1', errors='ignore').decode('gbk', errors='ignore'))
+            # print(line[1].encode('latin-1', errors='ignore').decode('gbk', errors='ignore'))
             data = str(line[0]).strip()
             title = str(line[1].encode('latin-1').decode('gbk')).strip()
             article = str(line[2].encode('latin-1').decode('gbk')).strip()
