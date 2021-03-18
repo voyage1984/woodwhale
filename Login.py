@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget,QPushButton,QMessageBox,\
     QHBoxLayout,QVBoxLayout,QLabel,QLineEdit
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSignal,Qt
+from PyQt5.QtGui import QIcon,QPixmap
 
 import MyDatabase
 
@@ -17,25 +17,48 @@ class LoginWindow(QWidget):
     def __init__gui(self):
         self.setWindowTitle("登录")
         self.setWindowIcon(QIcon('./src/logo.ico'))
+        self.setImg()
         self.setInput()
-        self.setBtn()
-        self.win = QVBoxLayout()
-        self.win.addItem(self.inputs)
-        self.win.addItem(self.btns)
+        self.win = QHBoxLayout()
+        self.win.addWidget(self.img)
+        self.right = QVBoxLayout()
+        self.right.addItem(self.inputs)
+        self.right.addWidget(self.btn_login)
+        self.right.setAlignment(Qt.AlignVCenter)
+        self.win.addLayout(self.right)
         self.setLayout(self.win)
+
+    def setImg(self):
+        self.img = QLabel()
+        self.img.setPixmap(QPixmap('./src/whale.png'))
+        self.img.setFixedSize(499,281)
 
     # 输入框
     def setInput(self):
         self.lab_username = QLabel('用户名：')
         self.lab_password = QLabel('密  码：')
+        self.lab_username.setFixedSize(50,25)
+        self.lab_password.setFixedSize(50,25)
+
+        # self.lab_username.setStyleSheet("background-color: rgb(250, 0, 0)")
+
         self.edit_username = QLineEdit()
         self.edit_password = QLineEdit()
+        self.edit_username.setFixedSize(300,25)
+        self.edit_password.setFixedSize(300,25)
 
         self.edit_password.setText(System.password)
         self.edit_username.setText(System.username)
 
         self.username = QHBoxLayout()
         self.password = QHBoxLayout()
+
+        self.username.setContentsMargins(5,0,5,20)
+        self.password.setContentsMargins(5,0,5,20)
+
+        self.username.setAlignment(Qt.AlignLeft)
+        self.password.setAlignment(Qt.AlignLeft)
+
         self.username.addWidget(self.lab_username)
         self.username.addWidget(self.edit_username)
         self.password.addWidget(self.lab_password)
@@ -44,12 +67,8 @@ class LoginWindow(QWidget):
         self.inputs.addItem(self.username)
         self.inputs.addItem(self.password)
 
-    # 按钮框：确认 / 取消
-    def setBtn(self):
         self.btn_login  = QPushButton('登录',self)
         self.btn_login.resize(self.btn_login.sizeHint())
-        self.btns = QHBoxLayout()
-        self.btns.addWidget(self.btn_login)
 
         self.btn_login.clicked.connect(self.confirmEvent)
 
@@ -86,16 +105,20 @@ class LoginWindow(QWidget):
     # 登录失败提示框
     def loginError(self):
         print('登录失败!',System.func_name())
-        QMessageBox.warning(self, '错误',
-                            "请检查用户名/密码！",
-                            QMessageBox.Apply)
+        System.dialog(self,'错误',
+                            "请检查用户名/密码！")
+        # QMessageBox.warning(self, '错误',
+        #                     "请检查用户名/密码！",
+        #                     QMessageBox.Apply)
 
     # 判断输入是否为空
     def nonEmpty(self):
         print('登录失败!',System.func_name())
-        QMessageBox.warning(self,'错误',
-                                 "用户名 / 密码不能为空！",
-                                 QMessageBox.Apply)
+        System.dialog(self,'错误',
+                                 "用户名 / 密码不能为空！")
+        # QMessageBox.warning(self,'错误',
+        #                          "用户名 / 密码不能为空！",
+        #                          QMessageBox.Apply)
 
     # 取消事件
     def closeEvent(self, event):

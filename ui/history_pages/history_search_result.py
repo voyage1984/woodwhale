@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout,QLabel,QPushButton,QListWidget,QGridLayout, QMessageBox
+from PyQt5.QtWidgets import QWidget,QHBoxLayout,QLabel,QListWidget,QGridLayout
 from PyQt5.QtWidgets import QApplication
 
 import System
-from PyQt5.QtCore import pyqtSignal
 
 from ui.history_pages import history_detail
 
@@ -71,11 +70,11 @@ class history_search_result(QWidget):
         print('item detail')
         item = self.list.currentItem()
         date = self.get_item(item)[0]
+        if self.is_item(date) == False:
+            return
         title = self.get_item(item)[1]
         article = self.get_item(item)[2]
         print(date)
-        if self.is_item(date) == False:
-            return
         self.detail._signal.connect(lambda:self.delete_item(item))
         self.detail.set_content(date,title,article)
         self.detail.exec()
@@ -85,6 +84,7 @@ class history_search_result(QWidget):
         print('已刷新')
 
     def is_item(self,date):
+        print('解析结果：',date)
         try:
             result = date.replace('-','')
             print('result = ',result)
@@ -97,3 +97,4 @@ class history_search_result(QWidget):
         except:
             print('发生了错误！',System.func_name())
             return False
+        return False

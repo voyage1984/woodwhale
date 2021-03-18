@@ -1,6 +1,9 @@
 import inspect
 
+from PyQt5.QtWidgets import QMessageBox
+
 l_history = ['h_date','h_title','h_article']
+l_recommend = ['r_date','r_title','r_article']
 db_name  = 'PyQt5_db'
 username = 'testuser'
 password = 'password'
@@ -8,6 +11,24 @@ password = 'password'
 def func_name():
     funcname = ": "+inspect.stack()[1][3]
     return funcname
+
+def get_username(name):
+    username = str(name)
+    result = username.split('\'')[1]
+    return result
+
+
+def dialog(self,title,main):
+    print('显示弹窗',func_name())
+    reply = QMessageBox.question(self, title,
+                                 main, QMessageBox.Yes |
+                                 QMessageBox.No, QMessageBox.No)
+
+    if reply == QMessageBox.Yes:
+        return True
+    else:
+        return False
+
 
 if __name__ == '__main__':
     import MyDatabase

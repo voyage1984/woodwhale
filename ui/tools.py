@@ -48,6 +48,7 @@ class tools(QWidget):
     def setdb(self,db):
         self.db = db
         self.history_page.set_db(db)
+        self.recommend_page.set_db(db)
 
     def btn_event(self):
         self.btn_recommend.clicked.connect(lambda :self.to_page(0))

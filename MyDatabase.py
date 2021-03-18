@@ -81,38 +81,63 @@ class DBModel:
             return -1
         return self.history_table[col]
 
-    def insert_history(self,date,title,article):
+    # def insert_history(self,date,title,article):
+    #     cursor = self.status(0)
+    #     if cursor != False:
+    #         sqlcmd = "insert into history("+self.history_table[0]+","+self.history_table[1]+","+self.history_table[2]+") values('"+date+"','"+title+"','"+article+"')"
+    #         print("执行sql语句：",sqlcmd)
+    #         try:
+    #             """
+    #             提交非法数据后再提交合法数据有BUG
+    #             """
+    #             cursor.execute(sqlcmd)
+    #             print('开始提交...')
+    #             self.myconnect.commit()
+    #             return True
+    #         except Exception as err:
+    #             print("执行语句失败！",System.func_name())
+    #             print(err)
+    #             return False
+    #     else:
+    #         print('连接数据库失败',System.func_name())
+    #         return False
+
+    def insert_tdta(self,table,date,title,article):
         cursor = self.status(0)
+        print('开始执行insert命令')
         if cursor != False:
-            sqlcmd = "insert into history("+self.history_table[0]+","+self.history_table[1]+","+self.history_table[2]+") values('"+date+"','"+title+"','"+article+"')"
-            print("执行sql语句：",sqlcmd)
+            print('获取游标成功！',System.func_name())
+            sqlcmd = "insert into "+table+" (date, title, article) values('"+str(date)+"','"+title+"','"+article+"')"
+            print("执行sql语句：", sqlcmd)
             try:
                 """
-                提交非法数据后再提交合法数据有BUG 
+                提交非法数据后再提交合法数据有BUG,包括insert和update
+                仅为状态错误BUG，不影响操作、数据的正确性
                 """
                 cursor.execute(sqlcmd)
                 print('开始提交...')
                 self.myconnect.commit()
                 return True
             except Exception as err:
-                print("执行语句失败！",System.func_name())
+                print("执行语句失败！", System.func_name())
                 print(err)
                 return False
         else:
-            print('连接数据库失败',System.func_name())
-            return False
+           print('连接数据库失败', System.func_name())
+        return False
 
-    def update_history(self,date,title,article):
+    def update_tdta(self,table,date,title,article):
         cursor = self.status(0)
         if cursor != False:
-            sqlcmd_title = "update history set " +self.history_table[1] +" ='" + title + "' where "+ self.history_table[0] +" = '" + date + "'"
-            sqlcmd_article = "update history set "+self.history_table[2] +" = '" + article + "' where " +self.history_table[0]+" = '" + date + "'"
+            sqlcmd_title = "update "+table+" set title "+ "= '"+ title + "' where date = '" + date + "'"
+            sqlcmd_article = "update "+table+" set article = '" + article + "' where date = '" + date + "'"
             print("执行sql语句：", sqlcmd_title)
             print("执行sql语句：", sqlcmd_article)
             try:
                 cursor.execute(sqlcmd_title)
                 cursor.execute(sqlcmd_article)
                 self.myconnect.commit()
+                print('修改数据成功',System.func_name())
                 return True
             except pymssql.Error:
                 print("执行语句失败！",System.func_name())
@@ -134,7 +159,7 @@ class DBModel:
             return list
         else:
             print("查询失败！",System.func_name())
-            return False
+        return False
 
     def get_search_from_table(self,col,keyword,table,mode):
         cursor = self.status(0)

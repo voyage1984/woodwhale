@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QVBoxLayout,QLineEdit,QDialog,QTextEdit,QPushButton,QHBoxLayout,QLabel,QMessageBox
+from PyQt5.QtWidgets import QVBoxLayout,QLineEdit,QDialog,QTextEdit,QPushButton,QHBoxLayout,QLabel
 
 import System
 from PyQt5.QtCore import pyqtSignal
@@ -50,22 +50,23 @@ class history_detail(QDialog):
             article = self.article.toPlainText()
             print(title,article)
             try:
-                self.db.update_history(self.date,title,article)
+                self.db.update_tdta("history",self.date,title,article)
                 self.status.setText('已保存')
+                self.close()
             except:
                 print('错误')
 
         def delete_event(self):
-            reply = QMessageBox.question(self, '警告',
-                                         "确认删除: "+self.date, QMessageBox.Yes |
-                                         QMessageBox.No, QMessageBox.No)
-
-            if reply == QMessageBox.Yes:
+            print('删除事件')
+            if System.dialog(self,'警告','确认删除？'):
                 print('确认删除')
-                if self.db.delete_data('history',System.l_history[0],self.date) == True:
+                if self.db.delete_data('history',"date",self.date) == True:
                     print('已删除数据：',self.date)
                     self.close()
                     self._signal.emit()
+                else:
+                    System.dialog(self,'删除失败！','请稍后再试')
+                    print('删除失败')
             else:
                 print('取消删除')
 

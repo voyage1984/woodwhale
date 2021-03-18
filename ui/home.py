@@ -14,6 +14,7 @@ from Login import LoginWindow as loginWindow
 from ui.tools import tools
 from ui.personal import personal as page_index
 import MyDatabase
+import System
 
 class Ui_home(QWidget):
     def __init__(self):
@@ -30,7 +31,7 @@ class Ui_home(QWidget):
     def mainwindow(self):
         self.setWindowIcon(QIcon('./src/logo.ico'))
         self.setFixedSize(1280, 720)
-        self.setWindowTitle('信息管理系统')
+        self.setWindowTitle('木鲸图书馆管理系统')
         self.layout = QHBoxLayout()
         # self.setStyleSheet('background-color:lightblue')
 
@@ -117,9 +118,7 @@ class Ui_home(QWidget):
             return False
 
     def login_Error(self):
-        QMessageBox.warning(self, '错误！',
-                                 "请先登录！", QMessageBox.Yes |
-                                 QMessageBox.No, QMessageBox.No)
+        System.dialog(self,'错误','请先登录')
 
     def closeEvent(self,event):
         print('退出事件')

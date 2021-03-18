@@ -4,7 +4,7 @@
     * label输出文字对齐
 '''
 
-from PyQt5.QtWidgets import QLabel,QWidget,QHBoxLayout,QLineEdit,QTextEdit,QVBoxLayout,QPushButton,QMessageBox
+from PyQt5.QtWidgets import QLabel,QWidget,QHBoxLayout,QLineEdit,QTextEdit,QVBoxLayout,QPushButton
 from PyQt5.QtCore import QThread,pyqtSignal
 
 import MyDatabase
@@ -91,7 +91,8 @@ class history_add(QWidget):
                     self.label_alert_detail.setText('更新成功！')
             return
         else:
-            if self.db.insert_history(date,title,article) == True:
+            if self.db.insert_tdta("history",date,title,article) == True:
+            # if self.db.insert_history(date,title,article) == True:
                 print('添加成功！')
                 self.add_alert(1)
                 self.label_alert_detail.setText(date)
@@ -141,10 +142,7 @@ class history_add(QWidget):
 
     def alter_Event(self):
         print('修改事件: history_add.alter_Event')
-        reply = QMessageBox.question(self, '内容已存在',
-                                     "是否更新?",QMessageBox.Yes, QMessageBox.No)
-
-        if reply == QMessageBox.Yes:
+        if System.dialog(self,'内容已存在',"是否更新?",):
             print('确认更新',System.func_name())
             return True
         else:
@@ -152,9 +150,7 @@ class history_add(QWidget):
             return False
 
     def show_err(self):
-        reply = QMessageBox.question(self, '插入失败！',
-                                     "请检查输入", QMessageBox.Yes |
-                                     QMessageBox.No)
+        System.dialog(self,'插入失败！',"请检查输入")
 
 class alert_thread(QThread):
     success = "成功！"
