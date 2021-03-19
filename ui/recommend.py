@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget,QLabel,QHBoxLayout,QVBoxLayout,QLineEdit,QPu
 from  PyQt5.QtCore import Qt
 
 from ui.recommend_pages import recomment_result
+import System
 
 class recommend(QWidget):
     def __init__(self):
@@ -28,11 +29,16 @@ class recommend(QWidget):
         self.btn_add.clicked.connect(self.add_recommend)
 
     def leftFrame(self):
+        self.label_search = QLabel('搜索标题:')
+        self.label_search.setFont(QFont("Microsoft YaHei", 10, 25))
         self.edit_serach =  QLineEdit()
         self.btn_search = QPushButton('搜索')
         search_bar = QHBoxLayout()
+        search_bar.addWidget(self.label_search)
         search_bar.addWidget(self.edit_serach)
         search_bar.addWidget(self.btn_search)
+
+        self.btn_search.clicked.connect(self.search)
 
         self.result = recomment_result.recommend_result()
         self.left = QVBoxLayout()
@@ -68,17 +74,30 @@ class recommend(QWidget):
 
     def add_recommend(self):
         print('添加recommend')
-        date = datetime.datetime.now()
-        print('现在的时间是: ',date)
+        date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
         title = self.edit_title.text()
         article = self.edit_article.toPlainText()
-        print('title: ',title)
-        print('article: ',article)
+        if(len(title)==0 or len(article)==0):
+            System.dialog(self,'错误','内容不能为空！')
+            return
         if self.db.insert_tdta('recommend',date,title,article) == False:
             print('提交失败！')
         else:
             print('提交成功！')
             self.edit_title.setText('')
             self.edit_article.setText('')
+            self.result.renew_item()
+
+    def search(self):
+        content = self.edit_serach.text()
+        print('搜索内容：',content)
+        if len(content) == 0:
+            print('搜索内容为空，默认全局搜索')
+            self.result.get_data()
+            return
+        else:
+            self.result.set_data(content)
+
 
 
