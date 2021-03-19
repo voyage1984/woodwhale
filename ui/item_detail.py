@@ -3,39 +3,42 @@ from PyQt5.QtWidgets import QVBoxLayout,QLineEdit,QDialog,QTextEdit,QPushButton,
 import System
 from PyQt5.QtCore import pyqtSignal
 
-class history_detail(QDialog):
+class item_detail(QDialog):
         _signal = pyqtSignal()
         def __init__(self):
             super().__init__()
             self.db = None
+            self.table = ''
             self.init()
 
         def init(self):
             self.setFixedSize(500, 400)
-            self.setume = QLabel('编辑')
+            setume = QLabel('编辑')
             self.status = QLabel('编辑中')
-            self.labels = QHBoxLayout()
-            self.labels.addWidget(self.setume)
-            self.labels.addWidget(self.status)
+            labels = QHBoxLayout()
+            labels.addWidget(setume)
+            labels.addWidget(self.status)
             self.title = QLineEdit()
             self.title.setFixedSize(400,30)
             self.article = QTextEdit()
-            self.buttons = QHBoxLayout()
+            buttons = QHBoxLayout()
             self.confirm = QPushButton('保存')
             self.delete = QPushButton('删除')
-            self.buttons.addWidget(self.confirm)
-            self.buttons.addWidget(self.delete)
-            self.layout = QVBoxLayout()
-            self.layout.addLayout(self.labels)
-            self.layout.addWidget(self.title)
-            self.layout.addWidget(self.article)
-            self.layout.addLayout(self.buttons)
-            self.setLayout(self.layout)
+            buttons.addWidget(self.confirm)
+            buttons.addWidget(self.delete)
+            layout = QVBoxLayout()
+            layout.addLayout(labels)
+            layout.addWidget(self.title)
+            layout.addWidget(self.article)
+            layout.addLayout(buttons)
+            self.setLayout(layout)
             self.click_event()
 
         def set_content(self,date,title,article):
             self.status.setText('编辑中')
             self.date = date
+            print('date is :',self.date)
+            print('table is :',self.table)
             self.setWindowTitle(date)
             self.title.setText(title)
             self.article.setText(article)
@@ -49,8 +52,11 @@ class history_detail(QDialog):
             title = self.title.text()
             article = self.article.toPlainText()
             print(title,article)
+            if (len(title) == 0 or len(article) == 0):
+                System.dialog(self, '错误', '内容不能为空！')
+                return
             try:
-                self.db.update_tdta("history",self.date,title,article)
+                self.db.update_tdta(self.table,self.date,title,article)
                 self.status.setText('已保存')
                 self.close()
                 self._signal.emit()
@@ -61,7 +67,7 @@ class history_detail(QDialog):
             print('删除事件')
             if System.dialog(self,'警告','确认删除？'):
                 print('确认删除')
-                if self.db.delete_data('history',"date",self.date) == True:
+                if self.db.delete_data(self.table,"date",self.date) == True:
                     print('已删除数据：',self.date)
                     self.close()
                     self._signal.emit()
@@ -71,9 +77,8 @@ class history_detail(QDialog):
             else:
                 print('取消删除')
 
-
-
-        def set_db(self,db):
+        def set_db(self,db,table):
             self.db = db
+            self.table = table
 
 
