@@ -24,7 +24,7 @@ class welcome(QWidget):
         self.user = QLabel('当前登录用户：')
         self.username = QLabel('未知')
 
-        self.user.setFixedSize(140,50)
+        self.user.setFixedSize(160,50)
         self.username.setFixedSize(160,50)
         self.user.setFont(QFont( "Microsoft YaHei", 15, 25))
         self.username.setFont(QFont( "Microsoft YaHei", 15, 25))
