@@ -15,7 +15,7 @@ class DBModel:
         print('开始连接数据库',System.func_name())
         try:
             print(name,pswd,System.db_name)
-            self.myconnect = pymssql.connect('.',user = name,password= pswd, database=System.db_name,charset="utf8") #服务器名,账户,密码,数据库名
+            self.myconnect = pymssql.connect('.',user = name,password= pswd, database=System.db_name) #服务器名,账户,密码,数据库名
         except Exception as e:
             print(e)
             print('连接数据库错误！',System.func_name())
@@ -81,33 +81,15 @@ class DBModel:
             return -1
         return self.col_name[col]
 
-    # def insert_history(self,date,title,article):
-    #     cursor = self.status(0)
-    #     if cursor != False:
-    #         sqlcmd = "insert into history("+self.history_table[0]+","+self.history_table[1]+","+self.history_table[2]+") values('"+date+"','"+title+"','"+article+"')"
-    #         print("执行sql语句：",sqlcmd)
-    #         try:
-    #             """
-    #             提交非法数据后再提交合法数据有BUG
-    #             """
-    #             cursor.execute(sqlcmd)
-    #             print('开始提交...')
-    #             self.myconnect.commit()
-    #             return True
-    #         except Exception as err:
-    #             print("执行语句失败！",System.func_name())
-    #             print(err)
-    #             return False
-    #     else:
-    #         print('连接数据库失败',System.func_name())
-    #         return False
-
     def insert_tdta(self,table,date,title,article):
         cursor = self.status(0)
         print('开始执行insert命令')
         if cursor != False:
             print('获取游标成功！',System.func_name())
-            sqlcmd = "insert into "+table+" (date, title, article) values('"+str(date)+"','"+title+"','"+article+"')"
+            if (date==None):
+                sqlcmd = "insert into "+table+" (title, article) values('"+title+"','"+article+"')"
+            else:
+                sqlcmd = "insert into "+table+" (date, title, article) values('"+str(date)+"','"+title+"','"+article+"')"
             print("执行sql语句：", sqlcmd)
             try:
                 """
