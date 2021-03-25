@@ -74,14 +74,14 @@ class recommend(QWidget):
 
     def add_recommend(self):
         print('添加recommend')
-        date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        # date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
         title = self.edit_title.text()
         article = self.edit_article.toPlainText()
         if(len(title)==0 or len(article)==0):
             System.dialog(self,'错误','内容不能为空！')
             return
-        if self.db.insert_tdta('recommend',date,title,article) == False:
+        if self.db.insert_tdta('recommend',None,title,article) == False:
             print('提交失败！')
         else:
             print('提交成功！')
