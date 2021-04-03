@@ -8,7 +8,8 @@ from ui.recommend_pages import recomment_result
 import System
 
 class recommend(QWidget):
-    def __init__(self):
+    def __init__(self,table):
+        self.table = table
         super().__init__()
         self.init()
 
@@ -40,13 +41,13 @@ class recommend(QWidget):
 
         self.btn_search.clicked.connect(self.search)
 
-        self.result = recomment_result.recommend_result()
+        self.result = recomment_result.recommend_result(self.table)
         self.left = QVBoxLayout()
         self.left.addLayout(search_bar)
         self.left.addWidget(self.result)
 
     def rightFrame(self):
-        self .label_add = QLabel('新建推荐')
+        self .label_add = QLabel('新建'+self.table)
         self.label_title = QLabel('标题：')
         self.label_article = QLabel('正文：')
         self.label_add.setFont(QFont("Microsoft YaHei", 15, 55))
@@ -81,7 +82,7 @@ class recommend(QWidget):
         if(len(title)==0 or len(article)==0):
             System.dialog(self,'错误','内容不能为空！')
             return
-        if self.db.insert_tdta('recommend',None,title,article) == False:
+        if self.db.insert_tdta(self.table,None,title,article) == False:
             print('提交失败！')
         else:
             print('提交成功！')
