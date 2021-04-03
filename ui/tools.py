@@ -40,19 +40,27 @@ class tools(QWidget):
 
     def loadPages(self):
         self.history_page = history()
-        self.recommend_page = recommend()
+        self.recommend_page = recommend("recommend")
+        self.tip_page = recommend("tips")
+        self.annouce_page = recommend("annouce")
 
         self.qsl.addWidget(self.recommend_page)
         self.qsl.addWidget(self.history_page)
+        self.qsl.addWidget(self.tip_page)
+        self.qsl.addWidget(self.annouce_page)
 
     def setdb(self,db):
         self.db = db
         self.history_page.set_db(db)
         self.recommend_page.set_db(db)
+        self.tip_page.set_db(db)
+        self.annouce_page.set_db(db)
 
     def btn_event(self):
         self.btn_recommend.clicked.connect(lambda :self.to_page(0))
         self.btn_history.clicked.connect(lambda :self.to_page(1))
+        self.btn_tip.clicked.connect(lambda :self.to_page(2))
+        self.btn_announce.clicked.connect(lambda :self.to_page(3))
 
     def to_page(self,num):
         print('切换:',self.tool_list[num],'页')
