@@ -10,6 +10,7 @@ class history_search_result(QWidget):
     def __init__(self):
         super().__init__()
         self.db = None
+        self.result = None
         self.init()
 
     def set_db(self,db):
@@ -34,17 +35,17 @@ class history_search_result(QWidget):
         self.mode = mode
         if len(keyword) == 0:
             print('没有关键词, 默认搜索全部')
-            result = self.db.get_all_from_table('history')
+            self.result = self.db.get_all_from_table('history')
         else:
             print("搜索关键词: ", keyword)
-            result = self.db.get_search_from_table(index, keyword, 'history', mode)
+            self.result = self.db.get_search_from_table(index, keyword, 'history', mode)
         self.clear_data()
         print("开始显示...")
-        if len(result) == 0:
+        if len(self.result) == 0:
             print('没有数据！')
             self.list.addItem("没有数据！")
             return
-        System.set_list(self.list,result)
+        System.set_list(self.list,self.result)
         QApplication.processEvents()
         print('显示完成')
 
@@ -52,16 +53,21 @@ class history_search_result(QWidget):
         System.clear_data(self)
 
     def item_detail(self):
-        print('item detail',System.func_name())
-        item = self.list.currentItem()
-        date = System.get_item(item)[0]
-        if System.is_item(date) == False:
-            return
-        title = System.get_item(item)[1]
-        article = System.get_item(item)[2]
+        print('item detail')
+        index = self.list.currentIndex().row()
+        print(self.result[index])
+        item = self.result[index]
+        id = item[0]
+        if System.is_item(str(id)) == False:
+            print('非item')
+        else:
+            print("是item")
+            print(item[1])
+            title = str(item[1].encode('latin-1').decode('gbk')).strip()
+            article = str(item[2].encode('latin-1').decode('gbk')).strip()
         # print(date)
         self.detail._signal.connect(self.renew_item)
-        self.detail.set_content(date,title,article)
+        self.detail.set_content(str(id),title,article)
         self.detail.exec()
 
     def renew_item(self):
