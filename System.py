@@ -2,10 +2,13 @@ import inspect
 
 from PyQt5.QtWidgets import QMessageBox
 
-col_name = ['date','title','article']
+col_name = (['date','title','article'],['id','title','author'])
 db_name  = 'PyQt5_db'
 username = 'testuser'
 password = 'password'
+
+def parsing(list):
+    return list.split(' ')
 
 def func_name():
     funcname = ": "+inspect.stack()[1][3]
@@ -39,13 +42,24 @@ def dialog(self,title,main):
 def set_list(o_list,i_list):
     print('开始设置list',func_name())
     for line in i_list:
+        print(line)
         # print(line[1].encode('latin-1', errors='ignore').decode('gbk', errors='ignore'))
-        print(line[0])
         data = str(line[0]).strip()
         title = str(line[1].encode('latin-1').decode('gbk')).strip()
-        article = str(line[2].encode('latin-1').decode('gbk')).strip()
-        string = data + '\t' + title + '\t' + article
+        # article = str(line[2].encode('latin-1').decode('gbk')).strip()
+        string = data + '\t' + title #+ '\t' + article
         o_list.addItem(string)
+
+def set_book_list(o_list,i_list):
+    print('开始设置list', func_name())
+    for line in i_list:
+        print(line)
+        print(line[2])
+        id = str(line[0]).strip()
+        title = str(line[1]).strip()
+        author =str(line[2]).strip()
+        print('解析完成！',func_name())
+        o_list.addItem(id+'\t'+title+'\t'+author)
 
 def get_item(item):
     result = item.text().split("\t")

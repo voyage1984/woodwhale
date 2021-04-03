@@ -7,7 +7,6 @@ E_show_data = 1
 
 class DBModel:
     def __init__(self):
-        # print('初始化数据库模型: MyDatabase.DBModel.__init__')
         self.myconnect = None
         self.col_name= System.col_name
 
@@ -76,10 +75,14 @@ class DBModel:
             return cursor
 
     def get_colName(self,col,table):
-        if len(self.col_name) < col:
-            print('未知的列名: ',col,table)
-            return -1
-        return self.col_name[col]
+        if table=='booklist':
+            print('获取booklist的列名')
+            return self.col_name[1][col]
+        elif table=="userlist":
+            return col
+        else:
+            print('获取'+table+'的列名')
+            return self.col_name[0][col]
 
     def insert_tdta(self,table,date,title,article):
         cursor = self.status(0)
@@ -92,10 +95,6 @@ class DBModel:
                 sqlcmd = "insert into "+table+" (date, title, article) values('"+str(date)+"','"+title+"','"+article+"')"
             print("执行sql语句：", sqlcmd)
             try:
-                """
-                提交非法数据后再提交合法数据有BUG,包括insert和update
-                仅为状态错误BUG，不影响操作、数据的正确性
-                """
                 cursor.execute(sqlcmd)
                 print('开始提交...')
                 self.myconnect.commit()
@@ -161,14 +160,30 @@ class DBModel:
             try:
                 print("执行sql语句：", sqlcmd)
                 cursor.execute(sqlcmd)
-                print('开始获取数据...')
                 list = cursor.fetchall()
+                print('获取数据成功！')
                 return list
             except:
                 print('发生了错误！',System.func_name())
                 return ""
         else:
             print("查询失败！",System.func_name())
+            return False
+
+    def update_table(self,table,colName,colValue,cdt,cdtName):
+        cursor = self.status(0)
+        sqlcmd = ''
+        if cursor != False:
+            print('开始读取数据表: ',table)
+            sqlcmd = "update " + table + ' set ' + colName + " = '" + colValue+"' where "+cdt+"= '"+cdtName+"'"
+            print("执行sql语句：", sqlcmd)
+        try:
+            cursor.execute(sqlcmd)
+            self.myconnect.commit()
+            print('更新数据成功！')
+            return True
+        except:
+            print('发生了错误！',System.func_name())
             return False
 
     def delete_data(self,table,keyword,value):
@@ -188,3 +203,48 @@ class DBModel:
             print("删除失败！",System.func_name())
         return False
 
+    def update_book(self,table,id,title,author,company,publish):
+        cursor = self.status(0)
+        if cursor != False:
+            sqlcmd_title = "update "+table+" set title = '"+ title + "' where id = " + id
+            sqlcmd_author = "update "+table+" set author = '" + author + "' where id = " + id
+            sqlcmd_company = "update "+table+" set company = '" + company + "' where id = " + id
+            sqlcmd_publish = "update "+table+" set publish = '" + publish + "' where id = " + id
+            print("执行sql语句：",sqlcmd_title)
+            try:
+                cursor.execute(sqlcmd_title)
+                cursor.execute(sqlcmd_author)
+                cursor.execute(sqlcmd_company)
+                cursor.execute(sqlcmd_publish)
+                self.myconnect.commit()
+                print('修改数据成功',System.func_name())
+                return True
+            except pymssql.Error:
+                print("执行语句失败！",System.func_name())
+                return False
+        else:
+            print('连接数据库失败',System.func_name())
+            return False
+
+    def insert_book(self,list):
+        cursor = self.status(0)
+        print('开始执行insert命令')
+        if cursor != False:
+            print('获取游标成功！', System.func_name())
+            sqlcmd = "insert into booklist (title, author,company,publish,total,rest,booknum,tag1,tag2) values('"
+            sqlcmd += list[0]+"','"+list[1]+"','"+list[2]+"','"+list[3]+"',"+list[4]+","+list[4]+",'"
+            sqlcmd += list[5]+"','"+list[6]+"','"+list[7]+"')"
+            print("执行sql语句：", sqlcmd)
+            try:
+                cursor.execute(sqlcmd)
+                print('开始提交...')
+                self.myconnect.commit()
+                return True
+            except Exception as err:
+                print("执行语句失败！", System.func_name())
+                print(err)
+                return False
+        else:
+            print('连接数据库失败', System.func_name())
+        return False
+        return True
