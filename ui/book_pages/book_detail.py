@@ -80,12 +80,12 @@ class book_detail(QDialog):
             self.id = id
             print('id is :',self.id)
             self.setWindowTitle(id)
-            list = self.db.get_search_from_table(0,self.id,'booklist',1)
+            self.list = self.db.get_search_from_table(0,self.id,'booklist',1)
             print('获取成功！')
-            self.title.setText(str(list[0][1]).strip())
-            self.author.setText(list[0][2].strip())
-            self.company.setText(list[0][3].strip())
-            self.publish.setText(str(list[0][4]).strip())
+            self.title.setText(str(self.list[0][1]).strip())
+            self.author.setText(self.list[0][2].strip())
+            self.company.setText(self.list[0][3].strip())
+            self.publish.setText(str(self.list[0][4]).strip())
 
         def click_event(self):
             self.confirm.clicked.connect(self.save_event)
@@ -112,6 +112,9 @@ class book_detail(QDialog):
 
         def delete_event(self):
             print('删除事件')
+            if(self.list[0][7]!=self.list[0][8]):
+                System.dialog(self,"错误！","此书库存与总数不匹配："+str(self.list[0][7])+"/"+str(self.list[0][8])+"\n无法删除")
+                return
             if System.dialog(self,'警告','确认删除？'):
                 print('确认删除')
                 if self.db.delete_data(self.table,"id",self.id):

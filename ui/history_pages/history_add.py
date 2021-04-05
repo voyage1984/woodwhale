@@ -1,11 +1,5 @@
-'''
-    * 添加 history_today  1
-    * 添加反馈（成功、失败）  1
-    * label输出文字对齐
-'''
-
 from PyQt5.QtWidgets import QLabel,QWidget,QHBoxLayout,QLineEdit,QTextEdit,QVBoxLayout,QPushButton
-from PyQt5.QtCore import QThread,pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
 
 import MyDatabase
 import System
@@ -43,7 +37,10 @@ class history_add(QWidget):
         layout_date.addWidget(self.input_date)
         layout_title.addWidget(label_title)
         layout_title.addWidget(self.input_title)
-        layout_article.addWidget(label_article)
+        layout_article_v = QVBoxLayout()
+        layout_article_v.setAlignment(Qt.AlignTop)
+        layout_article_v.addWidget(label_article)
+        layout_article.addLayout(layout_article_v)
         layout_article.addWidget(self.input_article)
 
         self.layout = QVBoxLayout()
@@ -70,9 +67,11 @@ class history_add(QWidget):
                 print('错误: 存在空值')
                 System.dialog(self,'错误','存在空值')
                 return
-            elif check ==2:
-                print('错误: 日期已存在')
+            else:
+                print('错误: 日期已存在'+date[5:9])
                 if self.alter_Event():
+                    print(check)
+                    self.db.update_table("history","date",date,"date",str(check))
                     self.db.update_tdta("history",date,title,article)
                     self.clear_text()
                     print('更新成功')
@@ -87,25 +86,30 @@ class history_add(QWidget):
                 self.show_err()
 
     def check_history(self,date,title,artile):
-        result = 1
+        result = self.check_exist(date)
         if len(date)==0 or len(title)==0 or len(artile)==0:
             print('不能输入空值！:',System.func_name())
-        elif self.check_exist(date):
+            result = 1
+        elif result!="":
             print('该日期已存在！',System.func_name())
-            result = 2
         else:
             result = False
         return result
 
     def check_exist(self,date):
-        print('检查日期: ',date,"是否存在...")
-        search = self.db.get_search_from_table(0,date,'history',1)
+        """19990101 1999-01-01"""
+        if(len(date)==8):
+            str = "-"+date[4:6]+"-"+date[6:8]
+        else:
+            str = date[4:9]
+        print('检查日期: ',str,"是否存在...")
+        search = self.db.get_search_from_table(0,str,'history',0)
         if len(search) == 0:
             print('未查询到数据: ',date)
-            return False
+            return ""
         else:
             print('已查询该数据: ',date)
-            return True
+            return search[0][0]
 
 
     def clear_text(self):
