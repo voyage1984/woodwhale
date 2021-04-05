@@ -1,5 +1,6 @@
 from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QLabel, QWidget, QHBoxLayout, QLineEdit, QTextEdit, QVBoxLayout, QPushButton, QComboBox
+from PyQt5.QtWidgets import QLabel, QWidget, QHBoxLayout, QLineEdit, QTextEdit, QVBoxLayout, QPushButton, QComboBox, \
+    QListView
 from PyQt5.QtCore import QThread, pyqtSignal
 
 import MyDatabase
@@ -132,8 +133,12 @@ class book_add(QWidget):
 
     def tags_select(self):
         self.menus = QComboBox()
-        self.menus.setFixedSize(150, 35)
         self.menus2 = QComboBox()
+        self.menus.setView(QListView())
+        self.menus.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
+        self.menus2.setView(QListView())
+        self.menus2.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
+        self.menus.setFixedSize(150, 35)
         self.menus2.setFixedSize(150, 35)
         menus = QHBoxLayout()
         menus.addWidget(self.menus)
@@ -147,6 +152,7 @@ class book_add(QWidget):
             return
         self.menus.clear()
         self.menus.addItem("")
+        # self.menus.setMaxVisibleItems(len(self.list))
         for line in self.list:
             self.menus.addItem(line[1])
         self.menus.currentIndexChanged.connect(self.set_tag2)
@@ -159,6 +165,7 @@ class book_add(QWidget):
             return
         list = self.list[index-1][2]
         list = System.parsing(list.strip())
+        # self.menus2.setMaxVisibleItems(len(list))
         for item in list:
             self.menus2.addItem(item)
 

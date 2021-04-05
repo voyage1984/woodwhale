@@ -14,6 +14,8 @@ class book_manage(QWidget):
     def init(self):
       self.btn_book_manage = QPushButton("图书管理")
       self.btn_rent_manage = QPushButton("借还管理")
+      self.btn_rent_manage.setFixedSize(500,35)
+      self.btn_book_manage.setFixedSize(500,35)
       self.btn_book_manage.clicked.connect(lambda :self.to_page(0))
       self.btn_rent_manage.clicked.connect(lambda :self.to_page(1))
 

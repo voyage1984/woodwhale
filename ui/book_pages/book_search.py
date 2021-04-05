@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget,QComboBox, QLineEdit,QPushButton,QHBoxLayout,QVBoxLayout,QFrame,QButtonGroup,QRadioButton,QStackedLayout
+from PyQt5.QtWidgets import QWidget, QComboBox, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QButtonGroup, \
+    QRadioButton, QStackedLayout, QListView
 
 from ui.book_pages.book_search_result import book_search_result
 from ui.book_pages.book_add import book_add
@@ -11,6 +12,8 @@ class book_search(QWidget):
 
     def init(self):
         self.menus = QComboBox()
+        self.menus.setView(QListView())
+        self.menus.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
         self.menus.addItem("编号")
         self.menus.addItem("书名")
         self.menus.addItem("作者")

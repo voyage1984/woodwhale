@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QComboBox, QLabel
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QComboBox, QLabel, QListView
 
 from MyDatabase import DBModel
 
@@ -19,6 +19,8 @@ class rent(QWidget):
     def init(self):
         self.init_labels()
         self.user_menus = QComboBox()
+        self.user_menus.setView(QListView())
+        self.user_menus.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
         self.user_menus.setFixedSize(150, 35)
         self.user_menus.addItem("用户ID")
         self.user_menus.addItem("用户姓名")

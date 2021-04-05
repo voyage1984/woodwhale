@@ -4,7 +4,8 @@
     * 自定义格式化输出
 """
 
-from PyQt5.QtWidgets import QWidget,QComboBox, QLineEdit,QPushButton,QHBoxLayout,QVBoxLayout,QFrame,QButtonGroup,QRadioButton,QStackedLayout
+from PyQt5.QtWidgets import QWidget, QComboBox, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QFrame, QButtonGroup, \
+    QRadioButton, QStackedLayout, QListView
 from ui.history_pages.history_search_result import history_search_result
 
 import time
@@ -17,6 +18,8 @@ class history_search(QWidget):
 
     def init(self):
         self.menus = QComboBox()
+        self.menus.setView(QListView())
+        self.menus.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
         self.menus.addItem("日期")
         self.menus.addItem("标题")
         self.menus.addItem("内容")

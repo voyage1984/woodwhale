@@ -22,7 +22,8 @@ class personal(QWidget):
         self.HBoxLayout = QHBoxLayout()
         self.btn_show = QtWidgets.QPushButton('欢迎页')
         self.btn_login = QtWidgets.QPushButton('登出')
-        # self.textBrowser = QtWidgets.QTextBrowser()
+        self.btn_show.setFixedSize(500,35)
+        self.btn_login.setFixedSize(500,35)
 
         self.HBoxLayout.addWidget(self.btn_show)
         self.HBoxLayout.addWidget(self.btn_login)

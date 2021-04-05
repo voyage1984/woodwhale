@@ -17,6 +17,10 @@ class tools(QWidget):
         self.btn_history = QPushButton("历史上的今天")
         self.btn_tip = QPushButton("小tip")
         self.btn_announce = QPushButton("公告")
+        self.btn_tip.setFixedSize(250,35)
+        self.btn_history.setFixedSize(250,35)
+        self.btn_announce.setFixedSize(250,35)
+        self.btn_recommend.setFixedSize(250,35)
 
         frame = QFrame(self)
 

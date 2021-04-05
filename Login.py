@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget,QPushButton,QMessageBox,\
     QHBoxLayout,QVBoxLayout,QLabel,QLineEdit
 from PyQt5.QtCore import pyqtSignal,Qt
-from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QFont
 
 import MyDatabase
 
@@ -23,7 +23,7 @@ class LoginWindow(QWidget):
         self.win.addWidget(self.img)
         self.right = QVBoxLayout()
         self.right.addItem(self.inputs)
-        self.right.addWidget(self.btn_login)
+        self.right.addLayout(self.btn)
         self.right.setAlignment(Qt.AlignVCenter)
         self.win.addLayout(self.right)
         self.setLayout(self.win)
@@ -67,7 +67,14 @@ class LoginWindow(QWidget):
         self.inputs.addItem(self.username)
         self.inputs.addItem(self.password)
 
+        self.btn = QHBoxLayout()
+        self.btn.setAlignment(Qt.AlignLeft)
         self.btn_login  = QPushButton('登录',self)
+        self.btn_login.setFixedSize(300,35)
+        self.btn.setContentsMargins(55,0,0,0)
+        self.btn.addWidget(self.btn_login)
+
+        self.btn_login.setFont(QFont("",11,))
         self.btn_login.resize(self.btn_login.sizeHint())
 
         self.btn_login.clicked.connect(self.confirmEvent)
