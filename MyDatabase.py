@@ -197,7 +197,7 @@ class DBModel:
                 self.myconnect.commit()
                 print('删除成功！')
                 return True
-            except:
+            except pymssql.Error:
                 print('执行失败！',System.func_name())
         else:
             print("删除失败！",System.func_name())
