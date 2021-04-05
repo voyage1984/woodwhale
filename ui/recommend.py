@@ -75,7 +75,6 @@ class recommend(QWidget):
 
     def add_recommend(self):
         print('添加recommend')
-        # date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
         title = self.edit_title.text()
         article = self.edit_article.toPlainText()
