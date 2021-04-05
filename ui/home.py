@@ -8,16 +8,16 @@
 '''
 
 from PyQt5.QtWidgets import QWidget,QFrame,QPushButton,QVBoxLayout,QHBoxLayout,QStackedLayout,QLabel,QMessageBox
-from PyQt5.QtGui import QIcon,QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QFont
 
 from Login import LoginWindow as loginWindow
 from ui.tools import tools
 from ui.personal import personal as page_index
 from ui.book_manage import book_manage
+from ui.user_manage import user_manage
+
 import MyDatabase
 import System
-
-from ui.personal import personal as user_manage
 
 class Ui_home(QWidget):
     def __init__(self):
@@ -43,7 +43,7 @@ class Ui_home(QWidget):
         self.p_login = loginWindow()
         self.p_tools= tools()
         self.p_book_manage = book_manage()
-        self.user_manage = user_manage()
+        self.p_user_manage = user_manage()
         self.p_index = page_index()
 
         self.qsl = QStackedLayout(self.rightFrame)
@@ -51,6 +51,7 @@ class Ui_home(QWidget):
         self.qsl.addWidget(self.p_index)
         self.qsl.addWidget(self.p_tools)
         self.qsl.addWidget(self.p_book_manage)
+        self.qsl.addWidget(self.p_user_manage)
 
 
     def leftwindow(self):
@@ -62,6 +63,14 @@ class Ui_home(QWidget):
         self.btn_tools = QPushButton('工具箱')
         self.btn_book_management = QPushButton('图书管理')
         self.btn_user_management = QPushButton('用户管理')
+        self.btn_login.setFixedSize(200,50)
+        self.btn_tools.setFixedSize(200,50)
+        self.btn_book_management.setFixedSize(200,50)
+        self.btn_user_management.setFixedSize(200,50)
+        self.btn_login.setFont(QFont("",12,))
+        self.btn_tools.setFont(QFont("",12,))
+        self.btn_book_management.setFont(QFont("",12,))
+        self.btn_user_management.setFont(QFont("",12,))
 
         leftBox = QVBoxLayout()
         leftBox.addWidget(self.label)
@@ -80,6 +89,7 @@ class Ui_home(QWidget):
         self.btn_login.clicked.connect(lambda :self.to_page(0))
         self.btn_tools.clicked.connect(lambda :self.to_page(1))
         self.btn_book_management.clicked.connect(lambda :self.to_page(2))
+        self.btn_user_management.clicked.connect(lambda :self.to_page(3))
 
 
     def to_page(self,num):
@@ -108,6 +118,7 @@ class Ui_home(QWidget):
         self.p_index.setdb(self.db)
         self.p_tools.setdb(self.db)
         self.p_book_manage.setdb(self.db)
+        self.p_user_manage.setdb(self.db)
 
     def logout(self):
         print('登出: home.logout')
