@@ -1,5 +1,6 @@
 import pymssql
 import System
+import time
 
 E_get_user = 0
 E_show_data = 1
@@ -95,8 +96,10 @@ class DBModel:
                 sqlcmd = "insert into "+table+" (date, title, article) values('"+str(date)+"','"+title+"','"+article+"')"
             print("执行sql语句：", sqlcmd)
             try:
+                cursor.execute("begin transaction")
                 cursor.execute(sqlcmd)
                 print('开始提交...')
+                cursor.execute("commit transaction")
                 self.myconnect.commit()
                 return True
             except Exception as err:
@@ -115,13 +118,15 @@ class DBModel:
             print("执行sql语句：", sqlcmd_title)
             print("执行sql语句：", sqlcmd_article)
             try:
+                cursor.execute("begin transaction")
                 cursor.execute(sqlcmd_title)
                 cursor.execute(sqlcmd_article)
+                cursor.execute("commit transaction")
                 self.myconnect.commit()
                 print('修改数据成功',System.func_name())
                 return True
-            except pymssql.Error:
-                print("执行语句失败！",System.func_name())
+            except pymssql.Error as e:
+                print("执行语句失败！",e)
                 return False
         else:
             print('连接数据库失败',System.func_name())
@@ -135,7 +140,6 @@ class DBModel:
             print("执行sql语句：",sqlcmd)
             cursor.execute(sqlcmd)
             list = cursor.fetchall()
-            # self.myconnect.commit()
             print("查询成功！",System.func_name())
             return list
         else:
@@ -170,6 +174,24 @@ class DBModel:
             print("查询失败！",System.func_name())
             return False
 
+    def get_search_from_table2(self, table,col, keyword,col2,ctd):
+        cursor = self.status(0)
+        if cursor != False:
+            print('开始读取数据表: ', table)
+            sqlcmd = "select * from " + table + ' where ' + col + " =  '" + keyword + "' and "+ col2 +" = '" + ctd + "'"
+            try:
+                print("执行sql语句：", sqlcmd)
+                cursor.execute(sqlcmd)
+                list = cursor.fetchall()
+                print('获取数据成功！')
+                return list
+            except:
+                print('发生了错误！', System.func_name())
+                return ""
+        else:
+            print("查询失败！", System.func_name())
+            return False
+
     def update_table(self,table,colName,colValue,cdt,cdtName):
         cursor = self.status(0)
         sqlcmd = ''
@@ -178,7 +200,9 @@ class DBModel:
             sqlcmd = "update " + table + ' set ' + colName + " = '" + colValue+"' where "+cdt+"= '"+cdtName+"'"
             print("执行sql语句：", sqlcmd)
         try:
+            cursor.execute("begin transaction")
             cursor.execute(sqlcmd)
+            cursor.execute("commit transaction")
             self.myconnect.commit()
             print('更新数据成功！')
             return True
@@ -193,7 +217,9 @@ class DBModel:
             sqlcmd = "delete from "+table+" where "+ keyword + " = "+ "'"+value+"'"
             try:
                 print("执行sql命令: ",sqlcmd)
+                cursor.execute("begin transaction")
                 cursor.execute(sqlcmd)
+                cursor.execute("commit transaction")
                 self.myconnect.commit()
                 print('删除成功！')
                 return True
@@ -203,19 +229,25 @@ class DBModel:
             print("删除失败！",System.func_name())
         return False
 
-    def update_book(self,table,id,title,author,company,publish):
+    def update_book(self,table,id,title,author,company,publish,tag1,tag2):
         cursor = self.status(0)
         if cursor != False:
+            sqlcmd_publish = "update " + table + " set publish = '" + publish + "' where id = " + id
             sqlcmd_title = "update "+table+" set title = '"+ title + "' where id = " + id
             sqlcmd_author = "update "+table+" set author = '" + author + "' where id = " + id
             sqlcmd_company = "update "+table+" set company = '" + company + "' where id = " + id
-            sqlcmd_publish = "update "+table+" set publish = '" + publish + "' where id = " + id
+            sqlcmd_tag1 = "update "+table+" set tag1 = '" + tag1.strip() + "' where id = " + id
+            sqlcmd_tag2 = "update "+table+" set tag2 = '" + tag2.strip() + "' where id = " + id
             print("执行sql语句：",sqlcmd_title)
             try:
+                cursor.execute("begin transaction")
                 cursor.execute(sqlcmd_title)
                 cursor.execute(sqlcmd_author)
                 cursor.execute(sqlcmd_company)
                 cursor.execute(sqlcmd_publish)
+                cursor.execute(sqlcmd_tag1)
+                cursor.execute(sqlcmd_tag2)
+                cursor.execute("commit transaction")
                 self.myconnect.commit()
                 print('修改数据成功',System.func_name())
                 return True
@@ -236,8 +268,10 @@ class DBModel:
             sqlcmd += list[5]+"','"+list[6]+"','"+list[7]+"')"
             print("执行sql语句：", sqlcmd)
             try:
+                cursor.execute("begin transaction")
                 cursor.execute(sqlcmd)
                 print('开始提交...')
+                cursor.execute("commit transaction")
                 self.myconnect.commit()
                 return True
             except Exception as err:
@@ -247,4 +281,38 @@ class DBModel:
         else:
             print('连接数据库失败', System.func_name())
         return False
-        return True
+
+    def insert_rent(self, userid, bookid):
+        cursor = self.status(0)
+        print('开始执行insert命令')
+        if cursor != False:
+            print('获取游标成功！', System.func_name())
+            now = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+            print("借出时间：",now)
+            end = time.strftime('%Y-%m-%d', time.localtime(time.time() + 30 * 24 * 3600))
+            print("归还时间：",end)
+            sqlcmd = "insert into rentlist (userid,bookid,rentday,returnday) values('" + userid + "','" + bookid + "','" + now+ "','" + end+ "')"
+            print("执行sql语句：", sqlcmd)
+            try:
+                cursor.execute("begin transaction")
+                cursor.execute(sqlcmd)
+                print('开始提交...')
+                cursor.execute("commit transaction")
+                self.myconnect.commit()
+                return True
+            except Exception as err:
+                print("执行语句失败！", System.func_name())
+                print(err)
+                return False
+        else:
+            print('连接数据库失败', System.func_name())
+        return False
+
+def get_time():
+    now = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    print("借出时间：", now)
+    end = time.strftime('%Y-%m-%d', time.localtime(time.time() + 30*24*3600))
+    print("归还时间：", end)
+
+if __name__ =="__main__":
+    get_time()
