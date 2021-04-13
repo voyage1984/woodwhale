@@ -7,8 +7,13 @@ db_name  = 'PyQt5_db'
 username = 'testuser'
 password = 'password'
 
-def parsing(list):
-    return list.split(' ')
+def parsing(list,code):
+    try:
+        i = list.split(code)
+    except Exception as e:
+        print(e)
+        return ""
+    return i
 
 def func_name():
     funcname = ": "+inspect.stack()[1][3]
@@ -42,7 +47,6 @@ def dialog(self,title,main):
 def set_list(o_list,i_list):
     print('开始设置list',func_name())
     for line in i_list:
-        print(line)
         # print(line[1].encode('latin-1', errors='ignore').decode('gbk', errors='ignore'))
         data = str(line[0]).strip()
         title = str(line[1].encode('latin-1').decode('gbk')).strip()
@@ -53,12 +57,9 @@ def set_list(o_list,i_list):
 def set_book_list(o_list,i_list):
     print('开始设置list', func_name())
     for line in i_list:
-        print(line)
-        print(line[2])
         id = str(line[0]).strip()
         title = str(line[1]).strip()
         author =str(line[2]).strip()
-        print('解析完成！',func_name())
         o_list.addItem(id+'\t'+title+'\t'+author)
 
 def get_item(item):
@@ -82,6 +83,9 @@ def is_item(date):
     except:
         print('发生了错误！',func_name())
         return False
+
+def parsingdate(date):
+    return int(date.replace("-",""))
 
 
 
