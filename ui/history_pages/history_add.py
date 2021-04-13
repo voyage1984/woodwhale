@@ -62,51 +62,55 @@ class history_add(QWidget):
         title = self.input_title.text()
         article = self.input_article.toPlainText()
         check = self.check_history(date,title,article)
-        if  check != False:
-            if check == 1:
-                print('错误: 存在空值')
-                System.dialog(self,'错误','存在空值')
-                return
-            else:
-                print('错误: 日期已存在'+date[5:9])
-                if self.alter_Event():
-                    print(check)
-                    self.db.update_table("history","date",date,"date",str(check))
-                    self.db.update_tdta("history",date,title,article)
-                    self.clear_text()
-                    print('更新成功')
+        if check == "empty":
+            print('错误: 存在空值')
+            System.dialog(self,'错误','存在空值')
             return
-        else:
+        elif check == "error":
+            System.dialog(self, '错误', '获取内容错误！')
+            return
+        elif check == "none":
+            print("即将插入数据")
             if self.db.insert_tdta("history",date,title,article) == True:
-            # if self.db.insert_history(date,title,article) == True:
                 print('添加成功！')
                 self.clear_text()
             else:
                 print('添加失败！',System.func_name())
                 self.show_err()
+        else:
+            print('错误: 日期已存在'+date[4:8])
+            if self.alter_Event():
+                self.db.update_table("history","date",date,"date",str(check))
+                if(self.db.update_tdta("history",date,title,article)):
+                    self.clear_text()
+                    print('更新成功')
+                else:
+                    System.dialog(self,"更新失败！","请联系管理员")
+                    return
+        return
+
 
     def check_history(self,date,title,artile):
-        result = self.check_exist(date)
         if len(date)==0 or len(title)==0 or len(artile)==0:
-            print('不能输入空值！:',System.func_name())
-            result = 1
-        elif result!="":
-            print('该日期已存在！',System.func_name())
+            print('不能输入空值！',System.func_name())
+            return "empty"
         else:
-            result = False
-        return result
+            return self.check_exist(date)
 
     def check_exist(self,date):
         """19990101 1999-01-01"""
         if(len(date)==8):
             str = "-"+date[4:6]+"-"+date[6:8]
-        else:
+        elif(len(date)==10):
             str = date[4:9]
+        else:
+            print("获取内容错误：",date)
+            return "error"
         print('检查日期: ',str,"是否存在...")
         search = self.db.get_search_from_table(0,str,'history',0)
         if len(search) == 0:
             print('未查询到数据: ',date)
-            return ""
+            return "none"
         else:
             print('已查询该数据: ',date)
             return search[0][0]
