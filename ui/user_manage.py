@@ -109,6 +109,8 @@ class user_manage(QWidget):
                 self.birthday.setText("")
                 self.rent.setText("")
                 return
+            else:
+                System.dialog(self,"注销失败！","请联系系统管理员")
 
     """布局：左，图片+用户信息"""
     def left(self):

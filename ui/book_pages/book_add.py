@@ -164,7 +164,7 @@ class book_add(QWidget):
         if index == 0:
             return
         list = self.list[index-1][2]
-        list = System.parsing(list.strip())
+        list = System.parsing(list.strip(),' ')
         # self.menus2.setMaxVisibleItems(len(list))
         for item in list:
             self.menus2.addItem(item)

@@ -2,13 +2,14 @@ from PyQt5.QtWidgets import QWidget, QListWidget,QGridLayout
 from PyQt5.QtWidgets import QApplication
 
 import System
+from MyDatabase import DBModel
 from ui import item_detail
 
 
 class recommend_result(QWidget):
     def __init__(self,table):
         super().__init__()
-        self.db = None
+        self.db = DBModel()
         self.table = table
         self.init()
 
