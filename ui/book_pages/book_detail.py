@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QVBoxLayout,QLineEdit,QDialog,QTextEdit,QPushButton,QHBoxLayout,QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QLineEdit, QDialog, QTextEdit, QPushButton, QHBoxLayout, QLabel, QComboBox, \
+    QListView
 
 import System
 from PyQt5.QtCore import pyqtSignal
@@ -52,14 +53,15 @@ class book_detail(QDialog):
             self.delete = QPushButton('删除')
             buttons.addWidget(self.confirm)
             buttons.addWidget(self.delete)
-            layout = QVBoxLayout()
+            self.layout = QVBoxLayout()
 
-            layout.addLayout(l_title)
-            layout.addLayout(l_author)
-            layout.addLayout(l_company)
-            layout.addLayout(l_publish)
-            layout.addLayout(buttons)
-            self.setLayout(layout)
+            self.layout.addLayout(l_title)
+            self.layout.addLayout(l_author)
+            self.layout.addLayout(l_company)
+            self.layout.addLayout(l_publish)
+            self.tags_select()
+            self.layout.addLayout(buttons)
+            self.setLayout(self.layout)
             self.click_event()
 
         def set_line_edit(self,w,h):
@@ -86,6 +88,9 @@ class book_detail(QDialog):
             self.author.setText(self.list[0][2].strip())
             self.company.setText(self.list[0][3].strip())
             self.publish.setText(str(self.list[0][4]).strip())
+            self.menus.addItem(self.list[0][5])
+            self.menus2.addItem(self.list[0][6])
+            self.set_tags()
 
         def click_event(self):
             self.confirm.clicked.connect(self.save_event)
@@ -101,14 +106,17 @@ class book_detail(QDialog):
                 System.dialog(self, '错误', '内容不能为空！')
                 return
             try:
-                if self.db.update_book(self.table,self.id,title,author,company,publish):
+                tag1 = self.menus.currentText()
+                tag2 = self.menus2.currentText()
+                print("设置tag：",tag1,",",tag2)
+                if self.db.update_book(self.table,self.id,title,author,company,publish,tag1,tag2):
                     self.status.setText('已保存')
                     self.close()
                     self._signal.emit()
                 else:
                     System.dialog(self,'保存失败！','请稍后再试')
-            except:
-                print('错误')
+            except Exception as e:
+                print('错误',e)
 
         def delete_event(self):
             print('删除事件')
@@ -130,5 +138,42 @@ class book_detail(QDialog):
         def set_db(self,db,table):
             self.db = db
             self.table = table
+
+        def tags_select(self):
+            self.menus = QComboBox()
+            self.menus2 = QComboBox()
+            self.menus.setView(QListView())
+            self.menus.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
+            self.menus2.setView(QListView())
+            self.menus2.setStyleSheet("QComboBox QAbstractItemView::item {min-height: 25px;}")
+            self.menus.setFixedSize(150, 35)
+            self.menus2.setFixedSize(150, 35)
+            menus = QHBoxLayout()
+            menus.addWidget(self.menus)
+            menus.addWidget(self.menus2)
+            self.layout.addLayout(menus)
+
+        def set_tags(self):
+            self.taglist = self.db.get_all_from_table('taglist')
+            if self.taglist == False:
+                System.dialog(self, "连接数据库失败！", "请稍后再试")
+                return
+            self.menus.clear()
+            self.menus.addItem(self.list[0][5])
+            for line in self.taglist:
+                self.menus.addItem(line[1])
+            self.menus.currentIndexChanged.connect(self.set_tag2)
+
+        def set_tag2(self):
+            self.menus2.clear()
+            index = self.menus.currentIndex()
+            if index == 0:
+                self.menus2.addItem(self.list[0][6])
+            else:
+                list = self.taglist[index-1][2]
+                list = System.parsing(list.strip(),' ')
+                # self.menus2.setMaxVisibleItems(len(list))
+                for item in list:
+                    self.menus2.addItem(item)
 
 
