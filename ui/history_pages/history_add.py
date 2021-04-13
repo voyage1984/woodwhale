@@ -102,7 +102,7 @@ class history_add(QWidget):
         if(len(date)==8):
             str = "-"+date[4:6]+"-"+date[6:8]
         elif(len(date)==10):
-            str = date[4:9]
+            str = date[4:10]
         else:
             print("获取内容错误：",date)
             return "error"
