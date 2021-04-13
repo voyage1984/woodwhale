@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QComboBox, QLabel, QListView
 
@@ -172,27 +174,36 @@ class rent(QWidget):
         self.get_book2()
 
     def get_book2(self):
+        print("借阅表：",self.rentlist)
         if (self.rentlist==None or len(self.rentlist) == 0):
             print("获取错误！")
+            self.book_rent.setText("借出日期：")
+            self.book_return.setText("归还期限：")
             return
+
         times = System.parsingdate(str(self.rentlist[0][4]))
         self.rentid = self.rentlist[0][0]
-        rentday = self.rentlist[0][3]
+        rentday = "self.rentlist[0][3]"
         returnday = self.rentlist[0][4]
         for i in self.rentlist:
             print("获取日期")
-            time = System.parsingdate(str(i[4]))
-            if times > time:
-                times = time
+            timenow = System.parsingdate(str(i[4]))
+            if times > timenow:
+                times = timenow
                 self.rentid = i[0]
                 rentday = i[3]
                 returnday = i[4]
         print(self.rentid)
         print(rentday,returnday)
-        self.book_rent.setText("借出日期："+str(rentday))
-        self.book_return.setText("归还期限："+str(returnday))
+        self.book_rent.setText("借出日期：" + str(rentday))
+        if System.parsingdate(str(returnday))<System.parsingdate(str(time.strftime('%Y-%m-%d', time.localtime(time.time() + 30 * 24 * 3600)))):
+            self.book_return.setText("归还期限：" + str(returnday) + "[已超期！]")
+        else:
+            self.book_return.setText("归还期限：" + str(returnday))
+
 
     def set_opration_btns(self):
+        self.rentlist = None
         self.btn_return.setEnabled(0)
         self.btn_rent.setEnabled(0)
         # 借书条件
@@ -209,6 +220,7 @@ class rent(QWidget):
                 self.btn_return.setEnabled(1)
                 self.borrow = i
                 return
+
 
     def rent_book(self):
         num = int(self.booklist[7])-1
