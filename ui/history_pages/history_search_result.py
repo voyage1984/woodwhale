@@ -45,7 +45,7 @@ class history_search_result(QWidget):
             print('没有数据！')
             self.list.addItem("没有数据！")
             return
-        System.set_list(self.list,self.result)
+        System.set_list(self.list,self.result,"日期","标题","正文")
         QApplication.processEvents()
         print('显示完成')
 
@@ -55,13 +55,13 @@ class history_search_result(QWidget):
     def item_detail(self):
         print('item detail')
         index = self.list.currentIndex().row()
-        print(self.result[index])
-        item = self.result[index]
-        id = item[0]
-        if System.is_item(str(id)) == False:
+        if index == 0:
             print('非item')
+            return
         else:
             print("是item")
+            item = self.result[index - 1]
+            id = item[0]
             print(item[1])
             title = str(item[1].encode('latin-1').decode('gbk')).strip()
             article = str(item[2].encode('latin-1').decode('gbk')).strip()

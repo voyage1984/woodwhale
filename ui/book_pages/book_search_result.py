@@ -1,10 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QListWidget,QGridLayout
+from PyQt5.QtWidgets import QWidget, QListWidget, QGridLayout
 from PyQt5.QtWidgets import QApplication
 
 import System
 
 from ui.book_pages import book_detail
-
 
 class book_search_result(QWidget):
     def __init__(self):
@@ -44,7 +43,7 @@ class book_search_result(QWidget):
             print('没有数据！')
             self.list.addItem("没有数据！")
             return
-        System.set_book_list(self.list,result)
+        self.numlist = System.set_book_list(self.list,result,"编号","标题","作者")
         QApplication.processEvents()
         print('显示完成')
 
@@ -53,13 +52,21 @@ class book_search_result(QWidget):
 
     def book_detail(self):
         print('book detail',System.func_name())
-        item = self.list.currentItem()
-        id = System.get_item(item)[0]
-        if System.is_item(id) == False:
-            return
-        self.detail._signal.connect(self.renew_item)
-        self.detail.set_content(id)
-        self.detail.exec()
+        try:
+            row = self.list.currentIndex().row()
+            if row == 0:
+                print("非item")
+                return
+            id = self.numlist[row-1]
+
+            print("获取ID：",id)
+            if System.is_item(id) == False:
+                return
+            self.detail._signal.connect(self.renew_item)
+            self.detail.set_content(id)
+            self.detail.exec()
+        except Exception as e:
+            print(e)
 
     def renew_item(self):
         self.show_data(self.index,self.keyword,self.mode)
