@@ -1,6 +1,9 @@
 import inspect
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QSize
+from PyQt5.QtWidgets import QMessageBox, QListWidgetItem
+from ui.model import listmodel
+from ui.model import historymodel
 
 col_name = (['date','title','article'],['id','title','author'])
 db_name  = 'PyQt5_db'
@@ -44,23 +47,54 @@ def dialog(self,title,main):
     else:
         return False
 
-def set_list(o_list,i_list):
+def set_list(o_list,i_list,col1,col2,col3):
     print('开始设置list',func_name())
+    list = []
+    set_item(o_list,col1,col2,col3)
     for line in i_list:
-        # print(line[1].encode('latin-1', errors='ignore').decode('gbk', errors='ignore'))
         data = str(line[0]).strip()
         title = str(line[1].encode('latin-1').decode('gbk')).strip()
-        # article = str(line[2].encode('latin-1').decode('gbk')).strip()
-        string = data + '\t' + title #+ '\t' + article
-        o_list.addItem(string)
+        article = str(line[2].encode('latin-1').decode('gbk')).strip()
+        set_item(o_list, data, title, article)
 
-def set_book_list(o_list,i_list):
+
+def set_item(o_list,col1,col2,col3):
+    model = historymodel.historymodel(col1,col2,col3)
+    myitem = QListWidgetItem()
+    myitem.setSizeHint(QSize(200, 50))
+    o_list.addItem(myitem)
+    o_list.setItemWidget(myitem, model)
+
+def set_recommendlist(o_list,i_list,col1,col2,col3):
     print('开始设置list', func_name())
+    list = []
+    set_listitem(o_list,col1,col2,col3)
     for line in i_list:
         id = str(line[0]).strip()
+        list.append(id)
+        title = str(line[1].encode('latin-1').decode('gbk')).strip()
+        author =str(line[2].encode('latin-1').decode('gbk')).strip()
+        set_listitem(o_list,id,title,author)
+    return list
+
+def set_book_list(o_list,i_list,col1,col2,col3):
+    print('开始设置list', func_name())
+    list = []
+    set_listitem(o_list,col1,col2,col3)
+    for line in i_list:
+        id = str(line[0]).strip()
+        list.append(id)
         title = str(line[1]).strip()
         author =str(line[2]).strip()
-        o_list.addItem(id+'\t'+title+'\t'+author)
+        set_listitem(o_list,id,title,author)
+    return list
+
+def set_listitem(o_list,col1,col2,col3):
+    model = listmodel.listmodel(col1,col2,col3)
+    myitem = QListWidgetItem()
+    myitem.setSizeHint(QSize(200, 50))
+    o_list.addItem(myitem)
+    o_list.setItemWidget(myitem, model)
 
 def get_item(item):
     result = item.text().split("\t")
