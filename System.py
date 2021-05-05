@@ -4,6 +4,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMessageBox, QListWidgetItem
 from ui.model import listmodel
 from ui.model import historymodel
+from ui.model import bookmodel
 
 col_name = (['date','title','article'],['id','title','author'])
 db_name  = 'PyQt5_db'
@@ -27,14 +28,12 @@ def get_username(name):
     result = username.split('\'')[1]
     return result
 
-
 def clear_data(self):
     print('开始遍历:',func_name())
     count = self.list.count()
     print('遍历范围:',count)
     for i in range(count):
         self.list.takeItem(0)
-
 
 def dialog(self,title,main):
     print('显示弹窗',func_name())
@@ -47,18 +46,18 @@ def dialog(self,title,main):
     else:
         return False
 
-def set_list(o_list,i_list,col1,col2,col3):
+def set_historylist(o_list,i_list,col1,col2,col3):
     print('开始设置list',func_name())
     list = []
-    set_item(o_list,col1,col2,col3)
+    set_historyitem(o_list,col1,col2,col3)
     for line in i_list:
         data = str(line[0]).strip()
         title = str(line[1].encode('latin-1').decode('gbk')).strip()
         article = str(line[2].encode('latin-1').decode('gbk')).strip()
-        set_item(o_list, data, title, article)
+        set_historyitem(o_list, data, title, article)
 
 
-def set_item(o_list,col1,col2,col3):
+def set_historyitem(o_list,col1,col2,col3):
     model = historymodel.historymodel(col1,col2,col3)
     myitem = QListWidgetItem()
     myitem.setSizeHint(QSize(200, 50))
@@ -68,29 +67,39 @@ def set_item(o_list,col1,col2,col3):
 def set_recommendlist(o_list,i_list,col1,col2,col3):
     print('开始设置list', func_name())
     list = []
-    set_listitem(o_list,col1,col2,col3)
+    set_recommenditem(o_list,col1,col2,col3)
     for line in i_list:
         id = str(line[0]).strip()
         list.append(id)
         title = str(line[1].encode('latin-1').decode('gbk')).strip()
         author =str(line[2].encode('latin-1').decode('gbk')).strip()
-        set_listitem(o_list,id,title,author)
+        set_recommenditem(o_list,id,title,author)
     return list
 
-def set_book_list(o_list,i_list,col1,col2,col3):
+def set_recommenditem(o_list,col1,col2,col3):
+    model = listmodel.listmodel(col1,col2,col3)
+    myitem = QListWidgetItem()
+    myitem.setSizeHint(QSize(200, 50))
+    o_list.addItem(myitem)
+    o_list.setItemWidget(myitem, model)
+
+def set_book_list(o_list,i_list):
     print('开始设置list', func_name())
     list = []
-    set_listitem(o_list,col1,col2,col3)
+    set_bookitem(o_list,"编号","标题","作者","出版社","出版日","索书号")
     for line in i_list:
         id = str(line[0]).strip()
         list.append(id)
         title = str(line[1]).strip()
         author =str(line[2]).strip()
-        set_listitem(o_list,id,title,author)
+        company = str(line[3]).strip()
+        publish = str(line[4]).strip()
+        booknum = str(line[9]).strip()
+        set_bookitem(o_list,id,title,author,company,publish,booknum)
     return list
 
-def set_listitem(o_list,col1,col2,col3):
-    model = listmodel.listmodel(col1,col2,col3)
+def set_bookitem(o_list,col1,col2,col3,col4,col5,col6):
+    model = bookmodel.bookmodel(col1,col2,col3,col4,col5,col6)
     myitem = QListWidgetItem()
     myitem.setSizeHint(QSize(200, 50))
     o_list.addItem(myitem)

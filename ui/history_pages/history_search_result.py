@@ -45,7 +45,7 @@ class history_search_result(QWidget):
             print('没有数据！')
             self.list.addItem("没有数据！")
             return
-        System.set_list(self.list,self.result,"日期","标题","正文")
+        System.set_historylist(self.list,self.result,"日期","标题","正文")
         QApplication.processEvents()
         print('显示完成')
 

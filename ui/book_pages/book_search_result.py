@@ -43,7 +43,7 @@ class book_search_result(QWidget):
             print('没有数据！')
             self.list.addItem("没有数据！")
             return
-        self.numlist = System.set_book_list(self.list,result,"编号","标题","作者")
+        self.numlist = System.set_book_list(self.list,result)
         QApplication.processEvents()
         print('显示完成')
 
