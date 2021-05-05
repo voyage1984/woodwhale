@@ -181,22 +181,17 @@ class rent(QWidget):
             self.book_return.setText("归还期限：")
             return
 
-        times = System.parsingdate(str(self.rentlist[0][4]))
         self.rentid = self.rentlist[0][0]
-        rentday = "self.rentlist[0][3]"
+        rentday = self.rentlist[0][3]
         returnday = self.rentlist[0][4]
-        for i in self.rentlist:
-            print("获取日期")
-            timenow = System.parsingdate(str(i[4]))
-            if times > timenow:
-                times = timenow
-                self.rentid = i[0]
-                rentday = i[3]
-                returnday = i[4]
-        print(self.rentid)
+
+        print("获取rentlist编号：",self.rentid)
         print(rentday,returnday)
         self.book_rent.setText("借出日期：" + str(rentday))
-        if System.parsingdate(str(returnday))<System.parsingdate(str(time.strftime('%Y-%m-%d', time.localtime(time.time() + 30 * 24 * 3600)))):
+        deadline = System.parsingdate(str(returnday))
+        datenow = System.parsingdate(str(time.strftime('%Y-%m-%d')))
+        print(deadline," : ",datenow)
+        if deadline<datenow:
             self.book_return.setText("归还期限：" + str(returnday) + "[已超期！]")
         else:
             self.book_return.setText("归还期限：" + str(returnday))
