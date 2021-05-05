@@ -33,8 +33,8 @@ class DBModel:
         cursor = None
         try:
             cursor = self.myconnect.cursor()
-        except:
-            print('打开数据库失败！',System.func_name())
+        except Exception as e:
+            print('打开数据库失败！',System.func_name(),e)
         if cursor == False:
             print('获取游标失败！',System.func_name())
             return False
@@ -65,8 +65,8 @@ class DBModel:
     def status(self,err_n):
         try:
             cursor = self.myconnect.cursor()
-        except:
-            print('未连接数据库: ',err_n,System.func_name())
+        except Exception as e:
+            print('未连接数据库: ',err_n,System.func_name(),e)
             return False
         if cursor == False:
             print('获取游标失败: ',err_n,System.func_name())
@@ -102,9 +102,8 @@ class DBModel:
                 cursor.execute("commit transaction")
                 self.myconnect.commit()
                 return True
-            except Exception as err:
-                print("执行语句失败！", System.func_name())
-                print(err)
+            except Exception as e:
+                print("执行语句失败！", System.func_name(),e)
                 return False
         else:
            print('连接数据库失败', System.func_name())
@@ -125,7 +124,7 @@ class DBModel:
                 self.myconnect.commit()
                 print('修改数据成功',System.func_name())
                 return True
-            except pymssql.Error as e:
+            except Exception as e:
                 print("执行语句失败！",e)
                 return False
         else:
@@ -167,8 +166,8 @@ class DBModel:
                 list = cursor.fetchall()
                 print('获取数据成功！')
                 return list
-            except:
-                print('发生了错误！',System.func_name())
+            except Exception as e:
+                print('发生了错误！',System.func_name(),e)
                 return ""
         else:
             print("查询失败！",System.func_name())
@@ -185,8 +184,8 @@ class DBModel:
                 list = cursor.fetchall()
                 print('获取数据成功！')
                 return list
-            except:
-                print('发生了错误！', System.func_name())
+            except  Exception as e:
+                print('发生了错误！', System.func_name(),e)
                 return ""
         else:
             print("查询失败！", System.func_name())
@@ -206,8 +205,8 @@ class DBModel:
             self.myconnect.commit()
             print('更新数据成功！')
             return True
-        except:
-            print('发生了错误！',System.func_name())
+        except Exception as e:
+            print('发生了错误！',System.func_name(),e)
             return False
 
     def delete_data(self,table,keyword,value):
@@ -223,8 +222,8 @@ class DBModel:
                 self.myconnect.commit()
                 print('删除成功！')
                 return True
-            except pymssql.Error:
-                print('执行失败！',System.func_name())
+            except Exception as e:
+                print('执行失败！',System.func_name(),e)
         else:
             print("删除失败！",System.func_name())
         return False
@@ -251,8 +250,8 @@ class DBModel:
                 self.myconnect.commit()
                 print('修改数据成功',System.func_name())
                 return True
-            except pymssql.Error:
-                print("执行语句失败！",System.func_name())
+            except Exception as e:
+                print("执行语句失败！",System.func_name(),e)
                 return False
         else:
             print('连接数据库失败',System.func_name())

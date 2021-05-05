@@ -74,8 +74,6 @@ class recommend(QWidget):
         self.right.setContentsMargins(20,0,0,0)
 
     def add_recommend(self):
-        print('添加recommend')
-
         title = self.edit_title.text()
         article = self.edit_article.toPlainText()
         if(len(title)==0 or len(article)==0):
@@ -83,6 +81,7 @@ class recommend(QWidget):
             return
         if self.db.insert_tdta(self.table,None,title,article) == False:
             print('提交失败！')
+            System.dialog(self, '错误', '提交失败！')
         else:
             print('提交成功！')
             self.edit_title.setText('')
